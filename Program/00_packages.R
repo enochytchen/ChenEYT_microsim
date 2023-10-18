@@ -1,0 +1,33 @@
+
+install.packages("survHE")
+install.packages("survival")
+install.packages("dplyr")
+install.packages("tidyverse")
+install.packages("ggplot2")
+install.packages("ggpubr")
+install.packages("survRM2")
+install.packages("pracma")
+install.packages("Rcpp")
+install.packages("officer")
+install.packages("flextable")
+install.packages("remotes")
+install.packages("mc2d")
+install.packages("mvtnorm")
+
+library(survHE)
+library(survival)
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(ggpubr)
+library(survRM2)
+library(pracma)
+library(Rcpp)
+library(officer)
+library(flextable)
+library(remotes)
+  remotes::install_github("mclements/rstpm2", ref="develop")
+  remotes::install_github("mclements/microsimulation")
+library(mc2d) # for beta pert distribution
+library(mvtnorm) # for bootstrapping parametric models 
+  

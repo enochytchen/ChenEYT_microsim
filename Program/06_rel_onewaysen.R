@@ -2388,3 +2388,6 @@ ft
 save_as_docx(ft, path="../Output/06_rel_onewaysen.docx")
 ################################################################
 setwd(original_wd)  # Reset to the original working directory
+################################################################
+## A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment © 2023 by Chen EYT, Dickman PW, Clements MS is licensed under CC BY 4.0
+

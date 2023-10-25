@@ -37,3 +37,8 @@ source("05_rel_microsim.R")     # Microsimulation model for cost-effectiveness a
 source("06_rel_onewaysen.R")    # One-way sensitivity analysis
 source("07_rel_PSA.R")          # Probabilistic sensitivity analysis 
 source("08_rel_CEplane_CEAC.R") # Plot cost-effectiveness plane and cost-effectiveness acceptability curve
+
+################################################################
+setwd(original_wd)  # Reset to the original working directory
+################################################################
+## A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment © 2023 by Chen EYT, Dickman PW, Clements MS is licensed under CC BY 4.0

@@ -4,6 +4,7 @@
 ## Reference: Williams C, Lewsey JD, Briggs AH, Mackay DF. 
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. 
 ##            Med Decis Making. 2017 May;37(4):340–52.
+##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial © 2017 by Williams C. et al is licensed under CC BY 3.0. 
 
 ## Set the wd as where this R file is
 if (require("rstudioapi") && isAvailable()) {
@@ -131,4 +132,5 @@ msmcancer3RFC<-subset(msmcancer3,treat==1)
 
 ################################################################
 setwd(original_wd)  # Reset to the original working directory
-
+################################################################
+## A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment © 2023 by Chen EYT, Dickman PW, Clements MS is licensed under CC BY 4.0

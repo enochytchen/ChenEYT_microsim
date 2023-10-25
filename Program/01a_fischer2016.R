@@ -153,3 +153,5 @@ write.table(fischer2016, file = "01a_fischer2016.txt", sep = " ",
             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ################################################################
 setwd(original_wd)  # Reset to the original working directory
+################################################################
+## A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment © 2023 by Chen EYT, Dickman PW, Clements MS is licensed under CC BY 4.0

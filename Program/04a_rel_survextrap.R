@@ -232,3 +232,6 @@ saveRDS(results_FC, file = "../Data/04a_rel_survextrap_results_FC.rds")
 saveRDS(results_RFC, file = "../Data/04a_rel_survextrap_results_RFC.rds")
 ################################################################
 setwd(original_wd)  # Reset to the original working directory
+################################################################
+## A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment © 2023 by Chen EYT, Dickman PW, Clements MS is licensed under CC BY 4.0
+

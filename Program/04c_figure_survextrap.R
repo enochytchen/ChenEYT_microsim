@@ -117,11 +117,19 @@ calculateAndPlot_prev <- function(sims, mfit1_data, mfit2_data, williams_data) {
   # Calculate the probabilities
   prevalence$prob <- prevalence$number / sims$n
   
+  # Calculate overall survival
+  prevalence_OS <- prevalence %>%
+    filter(state %in% c("PFS", "Prog")) %>%  
+    group_by(time) %>%                       
+    summarise(prob = sum(prob))              
+  
+  # Rename states
   prevalence <- prevalence %>%
                 mutate(state = str_replace(state, "Prog", "Progression"),
                        state = str_replace(state, "ExcD", "Excess death"),
                        state = str_replace(state, "ExpD", "Expected death"))
   
+
   # Define the desired order of the "state" variable
   order <- c("Expected death", "Excess death", "Progression", "PFS")
   prevalence$state <- factor(prevalence$state, levels = order)
@@ -131,10 +139,13 @@ calculateAndPlot_prev <- function(sims, mfit1_data, mfit2_data, williams_data) {
     scale_fill_manual(values = c("Expected death" = "gray75", 
                                  "Excess death" = "gray50",  
                                  "Progression" = "indianred1", 
-                                 "PFS" = "cornflowerblue")),
-    scale_color_manual(values = c("Observed--4 years" = "black", 
-                                  "Observed--8 years" = "chartreuse",
-                                  "Semi-Markov" = "gold1")))
+                                 "PFS" = "cornflowerblue"),
+                      breaks = c("PFS", "Progression", "Excess death", "Expected death")),
+    scale_color_manual(values = c("Observed 4-year OS" = "black", 
+                                  "Observed 8-year OS" = "chartreuse",
+                                  "Extrapolated OS: semi-Markov" = "gold1",
+                                  "Extrapolated OS: microsimulation" = "mediumorchid"),
+                       breaks = c("Observed 4-year OS", "Observed 8-year OS", "Extrapolated OS: semi-Markov", "Extrapolated OS: microsimulation")))
   
   # Plot
   plot <- ggplot(data = prevalence, aes(x = time, y = prob, fill = state)) +
@@ -154,18 +165,21 @@ calculateAndPlot_prev <- function(sims, mfit1_data, mfit2_data, williams_data) {
                 legend.key = element_rect(fill = "transparent")) + 
           
           # Add mfit1 (Hallek2010)
-          geom_step(data = mfit1_data, aes(x = time, y = surv, color = "Observed--4 years"), inherit.aes = FALSE,
-                    linetype = "solid", direction = "hv", linewidth = 1.2) +
+          geom_step(data = mfit1_data, aes(x = time, y = surv, color = "Observed 4-year OS"), inherit.aes = FALSE,
+                    linetype = "solid", direction = "hv", linewidth = 1.2, alpha = 0.8) +
           # Add mfit2 (Fischer2016)
-          geom_step(data = mfit2_data, aes(x = time, y = surv, color = "Observed--8 years" ), inherit.aes = FALSE,
-                    linetype = "solid", direction = "hv", linewidth = 1.2)  +
+          geom_step(data = mfit2_data, aes(x = time, y = surv, color = "Observed 8-year OS" ), inherit.aes = FALSE,
+                    linetype = "solid", direction = "hv", linewidth = 1.2, alpha = 0.8)  +
           # Add williams (Williams2017)
-          geom_line(data = williams_data, aes(x = time, y = surv, color = "Semi-Markov"), inherit.aes = FALSE,
-                    linetype = "solid", linewidth = 1.2)  +
+          geom_line(data = williams_data, aes(x = time, y = surv, color = "Extrapolated OS: semi-Markov"), inherit.aes = FALSE,
+                    linetype = "solid", linewidth = 1, alpha = 0.8)  +
+          # Add microsimulation
+          geom_line(data = prevalence_OS, aes(x = time, y = prob, color = "Extrapolated OS: microsimulation"), inherit.aes = FALSE,
+                    linetype = "solid", linewidth = 1, alpha = 0.9) +
           # Legend
           scale_custom +
-          guides(fill = guide_legend(title = ""), 
-                 color = guide_legend(title = ""))
+          guides(fill = guide_legend(title = "", nrow = 1), 
+                 color = guide_legend(title = "", nrow = 2))
   
   return(plot)
     
@@ -193,7 +207,6 @@ prev_RFC <- prevplotlist[[2]]
 prev_RFC <- prev_RFC + labs(title = "RFC") +
             theme(plot.title = element_text(hjust = 0.5, size = 18))
 
-
 ## Plot two figures together
 plot <- ggarrange(prev_FC, prev_RFC, ncol = 2,
                   common.legend = TRUE, legend="bottom",
@@ -206,6 +219,22 @@ ggsave("../Output/04c_figure_survextrap.png", plot, width = 10, height = 7, unit
 ################################################################
 setwd(original_wd)  # Reset to the original working directory
 ################################################################
-## A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment © 2023 by Chen EYT, Dickman PW, Clements MS is licensed under CC BY 4.0
-
+# Copyright 2023 Chen EYT. All Rights Reserved.
+# A microsimulation model incorporating relative survival extrapolation and 
+# multiple timescales for health technology assessment
+# 
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 

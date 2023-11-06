@@ -1,5 +1,9 @@
-## Created: 20231009 Enoch Chen
-## Latest update: 20231106
+## A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment
+
+
+Created: 20231009 Enoch Chen
+Latest update: 20231106
+
 
 For reproducing the analyses from the study entitled "A microsimulation model incorporating relative survival extrapolation and multiple timescales for health technology assessment". Parts of the data and syntaxes used in this study were from the supplementary materials of Williams et al.'s study (available from: www.gla.ac.uk/hehta/reports/cwilliams).
 

@@ -49,7 +49,7 @@ table(popmort2$cohort)
 # For example, male, dx 2003 and age 61 -> cohort = 1942
 # getRates_cohort(1, 1942)
 getRates_cohort = function(.sex, .cohort) { # .cohort = year-age
-  subset(popmort2, sex==.sex & cohort==.cohort)$rate
+  subset(popmort2, sex==.sex & cohort==.cohort)
 }
 
 ##############################################################
@@ -165,7 +165,7 @@ sourceCpp(code="
     IDM(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
        // get the rates from param
       vec mu0 = as<vec>(param(\"mu0\"));
-      vec ages = arma::regspace(0.0,mu0.size()-1.0);
+      vec ages = as<vec>(param(\"ages\"));
       background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
       // read in from param...
       m1 = ssim::gsm(as<List>(param(\"m1\")));
@@ -332,7 +332,7 @@ sourceCpp(code="
     IDM(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
        // get the rates from param
       vec mu0 = as<vec>(param(\"mu0\"));
-      vec ages = arma::regspace(0.0,mu0.size()-1.0);
+      vec ages = as<vec>(param(\"ages\"));
       background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
       // read in from param...
       m1 = ssim::gsm(as<List>(param(\"m1\")));
@@ -492,7 +492,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -520,7 +521,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -647,7 +649,7 @@ sourceCpp(code="
     IDM(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
        // get the rates from param
       vec mu0 = as<vec>(param(\"mu0\"));
-      vec ages = arma::regspace(0.0,mu0.size()-1.0);
+      vec ages = as<vec>(param(\"ages\"));
       background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
       // read in from param...
       m1 = ssim::gsm(as<List>(param(\"m1\")));
@@ -802,7 +804,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
                   m2 = gsm_design(m2, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
@@ -830,7 +833,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
                 m2 = gsm_design(m2, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
@@ -954,7 +958,7 @@ sourceCpp(code="
     IDM(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
        // get the rates from param
       vec mu0 = as<vec>(param(\"mu0\"));
-      vec ages = arma::regspace(0.0,mu0.size()-1.0);
+      vec ages = as<vec>(param(\"ages\"));
       background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
       // read in from param...
       m1 = ssim::gsm(as<List>(param(\"m1\")));
@@ -1109,7 +1113,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -1137,7 +1142,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -1263,7 +1269,7 @@ sourceCpp(code="
     IDM(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
        // get the rates from param
       vec mu0 = as<vec>(param(\"mu0\"));
-      vec ages = arma::regspace(0.0,mu0.size()-1.0);
+      vec ages = as<vec>(param(\"ages\"));
       background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
       // read in from param...
       m1 = ssim::gsm(as<List>(param(\"m1\")));
@@ -1418,7 +1424,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -1446,7 +1453,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -1572,7 +1580,7 @@ sourceCpp(code="
     IDM(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
        // get the rates from param
       vec mu0 = as<vec>(param(\"mu0\"));
-      vec ages = arma::regspace(0.0,mu0.size()-1.0);
+      vec ages = as<vec>(param(\"ages\"));
       background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
       // read in from param...
       m1 = ssim::gsm(as<List>(param(\"m1\")));
@@ -1727,7 +1735,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -1755,7 +1764,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -1820,7 +1830,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -1847,7 +1858,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -1912,7 +1924,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -1939,7 +1952,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -2004,7 +2018,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -2031,7 +2046,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -2096,7 +2112,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -2123,7 +2140,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -2188,7 +2206,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -2215,7 +2234,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),
@@ -2280,7 +2300,8 @@ results <- lapply(treat_values, function(treat_value) {
                   debug = FALSE,
                   dxage = 61, 
                   ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1, newdata = ndata),
                   m2 = gsm_design(m2, newdata = ndata),
@@ -2307,7 +2328,8 @@ results <- lapply(treat_values, function(treat_value) {
                 debug = FALSE,
                 dxage = 61, 
                 ## Background rate
-                mu0 = getRates_cohort(3, 2005 - 61), # Draw a rate from sex 0/1, year 2003/2006 - age
+                mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                ages = getRates_cohort(3, 2005 - 61)$age,
                 ## Survival models
                 m1 = gsm_design(m1, newdata = ndata),
                 m2 = gsm_design(m2, newdata = ndata),

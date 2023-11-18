@@ -21,6 +21,7 @@ if (require("rstudioapi") && isAvailable()) {
 ##============================================================
 ##############################################################
 library(ggplot2)
+library(ggpubr)
 library(tidyverse)
 library(mc2d) # for beta pert distribution
 library(pracma)
@@ -46,7 +47,7 @@ plot <- ggplot() +
         geom_hline(yintercept = 0, linetype = "dashed") +
         geom_vline(xintercept = 0, linetype = "dashed") + 
         geom_abline(intercept = 0, slope = 30000, linetype = "dashed", color = "indianred1") +
-        annotate(geom="text", x = 1, y = 18000, label = "WTP = £30,000", color = "indianred1", size = 4)+
+        annotate(geom="text", x = 1, y = 18000, label = "CET = £30,000", color = "indianred1", size = 4)+
         theme_bw() +  # Set a white background
         theme(panel.grid = element_blank(), 
               panel.background = element_rect(fill = "white"))
@@ -343,7 +344,7 @@ plot1 <- ggplot() +
            geom_hline(yintercept = 0, linetype = "dashed") +
            geom_vline(xintercept = 0, linetype = "dashed") + 
            geom_abline(intercept = 0, slope = 30000, linetype = "dashed", color = "indianred1") +
-           annotate(geom="text", x = 1, y = 18000, label = "WTP = £30,000", color = "indianred1", size = 4)+
+           annotate(geom="text", x = 1, y = 18000, label = "CET = £30,000", color = "indianred1", size = 4)+
            theme_bw() +  # Set a white background
            theme(panel.grid = element_blank(),
                   plot.title = element_text(hjust = 0.5),

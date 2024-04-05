@@ -2,10 +2,11 @@
 ## Purpose: List the order of the syntaxes
 
 #' Set the wd as where this R file is
+original_wd <- getwd()  # Store the original working directory
 if (require("rstudioapi") && isAvailable()) {
   wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  setwd(wd)
-}
+} else wd <- "~/src/R/ChenEYT_microsim/Program/"
+setwd(wd)
 
 ##############################################################
 ##============================================================
@@ -30,9 +31,9 @@ source("02_msmcancer.R")      # Claim 4 years of survival data into a multistate
 ##============================================================
 ##############################################################
 source("03_rel_survmod.R")      # Fit survival models
-source("04_rel_survextrap.R")   # Evaluate survival extrapolation
-source("04b_table_survextrap")  # Tabulate the observed and the extrapolated survival
-source("04c_figure_survextrap") # Plot the observed and the extrapolated survival
+source("04a_rel_survextrap.R")   # Evaluate survival extrapolation
+source("04b_table_survextrap.R")  # Tabulate the observed and the extrapolated survival
+source("04c_figure_survextrap.R") # Plot the observed and the extrapolated survival
 source("05_rel_microsim.R")     # Microsimulation model for cost-effectiveness analysis
 source("06_rel_onewaysen.R")    # One-way sensitivity analysis
 source("07_rel_PSA.R")          # Probabilistic sensitivity analysis 

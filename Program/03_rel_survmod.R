@@ -2,13 +2,6 @@
 ## Purpose: Fit parametric models for multistate-structed data
 ##          Relative survival framework
 
-## Set the wd as where this R file is
-if (require("rstudioapi") && isAvailable()) {
-  original_wd <- getwd()  # Store the original working directory
-  wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  setwd(wd)
-}
-
 ## Set seed for coherency
 set.seed(12345)
 
@@ -20,6 +13,8 @@ set.seed(12345)
 library(rstpm2)
 library(ggplot2)
 library(ggpubr)
+library(flexsurv)
+library(hesim)
 
 ##############################################################
 ##============================================================
@@ -52,6 +47,8 @@ models <- lapply(c(2, 3, 4), function(df) {
   })
   c(mod, mod_tvc)
 })
+m1Hesim <- flexsurvreg(Surv(Tstart, Tstop, status == 1) ~ treat, data = msmcancer1,
+                       dist="gompertz")
 
 aic_values <- unlist(lapply(models, function(model) {
   unlist(lapply(model, AIC))
@@ -131,6 +128,11 @@ models <- lapply(c(2, 3, 4), function(df) {
   })
   c(mod, mod_tvc)
 })
+## m2Hesim <- flexsurvreg(Surv(Tstart, Tstop, status == 1) ~ treat,
+##                        bhazard = msmcancer2$rate, 
+##                        data = msmcancer2, dist="weibullPH")
+m2Hesim <- flexsurvreg(Surv(Tstart, Tstop, status == 1) ~ treat,
+                       data = msmcancer2, dist="gengamma")
 
 aic_values <- unlist(lapply(models, function(model) {
   unlist(lapply(model, AIC))
@@ -217,6 +219,12 @@ models <- lapply(c(2, 3, 4), function(df) {
   })
   c(mod, mod_tvc)
 })
+## m3Hesim <- flexsurvreg(Surv(time, status == 1) ~ treat,
+##                        bhazard = rate, data = msmcancer3,
+##                        dist="gengamma")
+m3Hesim <- flexsurvreg(Surv(time, status == 1) ~ treat,
+                       data = msmcancer3,
+                       dist="gompertz")
 
 aic_values <- unlist(lapply(models, function(model) {
   unlist(lapply(model, AIC))
@@ -278,8 +286,6 @@ legend(0.2, 5, c("FPRSM--RFC", "FPRSM--FC"), bty="n",
        col = c("blue", "red"), cex=1)
 title(main="Progression -> death", cex.main=1)
 
-################################################################
-setwd(original_wd)  # Reset to the original working directory
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

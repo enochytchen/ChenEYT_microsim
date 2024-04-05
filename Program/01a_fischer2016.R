@@ -5,14 +5,7 @@
 ##            Long-term remissions after FCR chemoimmunotherapy in previously untreated patients with CLL: updated results of the CLL8 trial.
 ##            Blood. 2016 Jan 14;127(2):208–15.  
 
-## Set the wd as where this R file is
-if (require("rstudioapi") && isAvailable()) {
-  original_wd <- getwd()  # Store the original working directory
-  wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  setwd(wd)
-}
 setwd("../Data")
-getwd()
 
 ##############################################################
 ##============================================================
@@ -152,7 +145,7 @@ plot(mfit,
 write.table(fischer2016, file = "01a_fischer2016.txt", sep = " ",
             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ################################################################
-setwd(original_wd)  # Reset to the original working directory
+setwd("../Program/")
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

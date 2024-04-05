@@ -14,6 +14,13 @@ install.packages("remotes")
 install.packages("mc2d")
 install.packages("mvtnorm")
 
+library(remotes)
+remotes::install_github("mclements/rstpm2", ref="develop")
+remotes::install_github("mclements/microsimulation")
+remotes::install_github("chjackson/flexsurv") # to fix a bug in relative survival modelling
+
+## MC: Enoch, what about separating the installing and reading of the packages?
+
 library(survHE)
 library(survival)
 library(dplyr)
@@ -25,14 +32,11 @@ library(pracma)
 library(Rcpp)
 library(officer)
 library(flextable)
-library(remotes)
-  remotes::install_github("mclements/rstpm2", ref="develop")
-  remotes::install_github("mclements/microsimulation")
+library(rstpm2)
+library(microsimulation)
 library(mc2d) # for beta pert distribution
 library(mvtnorm) # for bootstrapping parametric models 
 
-################################################################
-setwd(original_wd)  # Reset to the original working directory
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

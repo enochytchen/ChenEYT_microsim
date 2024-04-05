@@ -3,13 +3,6 @@
 ##          Relative survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
 
-## Set the wd as where this R file is
-if (require("rstudioapi") && isAvailable()) {
-  original_wd <- getwd()  # Store the original working directory
-  wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  setwd(wd)
-}
-
 ## Set seed for coherency
 set.seed(12345)
 ##############################################################
@@ -410,6 +403,215 @@ simulations = function(n, param, simulator=callSim, indivp=TRUE) {
   object
 }
 
+## Hesim implementation -- no background??
+sourceCpp(code="
+  // BH is required for older versions of microsimulation
+  // RcppArmadillo is required for newer versions of microsimulation
+  // [[Rcpp::depends(BH)]]
+  // [[Rcpp::depends(hesim)]]
+  // [[Rcpp::depends(RcppArmadillo)]]
+  // [[Rcpp::depends(microsimulation)]]
+  #include <RcppArmadillo.h>
+  #include <microsimulation.h>
+  #include <hesim.h>
+  #include <hesim/ctstm/ctstm.h>
+  using namespace arma;
+  using namespace ssim;
+  enum state_t {PFS, Prog, ExcD, ExpD};
+  enum event_t {toPFS, toProg, toExcD, toExpD, toEOS};
+  typedef ssim::SummaryReport<short,short> Report;
+  /**
+      Utility: Random exponential using rate parameterisation
+  */
+  double rexpRate(double rate) { return R::rexp(1.0/rate); }
+  // template<class T> double rexpRate(T rate) { return R::rexp(1.0/as<double>(rate)); }
+  /**
+      Utility: Run a set of simulations for a single process
+  */
+  void runSimulations(ssim::cProcess* process, int n) {
+    for (int i = 0; i < n; i++) {
+      ssim::Sim::create_process(process);
+      ssim::Sim::run_simulation();
+      ssim::Sim::clear();
+    }
+  }
+  /**
+      Define a class for the process
+  */
+  class IDMHesim : public ssim::cProcess
+  {
+  public:
+    int id;
+    state_t state;
+    Rcpp::List param;
+    Report *report;
+    // ssim::Rpexp background;
+    std::unique_ptr<hesim::ctstm::transmod> m1;  
+    std::unique_ptr<hesim::ctstm::transmod> m2;  
+    std::unique_ptr<hesim::ctstm::transmod> m3;  
+    double dxage;
+    int treat; // treat variable indicating 1=RFC or 0=FC
+    // Cost data
+    // RFC
+    double c_RFC_rituximab;
+    double c_RFC_admin_rituximab;
+    double c_RFC_fludarabine;
+    double c_RFC_admin_fludarabine;
+    double c_RFC_cyclophosphamide;
+    double c_RFC_admin_cyclophosphamide;
+    double c_RFC_support_PFS;
+    double c_RFC_bone_marrow_transplantation;
+    double c_RFC_blood_transfusions;
+    double c_RFC_support_Prog;
+    double c_RFC_therapy;
+    // FC 
+    double c_FC_rituximab;
+    double c_FC_admin_rituximab;
+    double c_FC_fludarabine;
+    double c_FC_admin_fludarabine;
+    double c_FC_cyclophosphamide;
+    double c_FC_admin_cyclophosphamide;
+    double c_FC_support_PFS;
+    double c_FC_bone_marrow_transplantation;
+    double c_FC_blood_transfusions;
+    double c_FC_support_Prog;
+    double c_FC_therapy;
+    // IDMHesim(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
+    IDMHesim(Rcpp::List param, Report *report) : id(-1), param(param), report(report) {
+       // get the rates from param
+      treat = param(\"treat\");
+      vec mu0 = as<vec>(param(\"mu0\"));
+      vec ages = as<vec>(param(\"ages\"));
+      // background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
+      m1 = hesim::ctstm::transmod::create(as<Rcpp::Environment>(param(\"m1\")));
+      m1->obs_index_.set_patient_index(0);
+      m1->obs_index_.set_strategy_index(treat);
+      m2 = hesim::ctstm::transmod::create(as<Rcpp::Environment>(param(\"m2\")));
+      m2->obs_index_.set_patient_index(0);
+      m2->obs_index_.set_strategy_index(treat);
+      m3 = hesim::ctstm::transmod::create(as<Rcpp::Environment>(param(\"m3\")));
+      m3->obs_index_.set_patient_index(0);
+      m3->obs_index_.set_strategy_index(treat);
+      dxage = param(\"dxage\");
+      // Cost data
+      // RFC
+      c_RFC_rituximab = param(\"c_RFC_rituximab\");
+      c_RFC_admin_rituximab = param(\"c_RFC_admin_rituximab\");
+      c_RFC_fludarabine = param(\"c_RFC_fludarabine\");
+      c_RFC_admin_fludarabine = param(\"c_RFC_admin_fludarabine\");
+      c_RFC_cyclophosphamide = param(\"c_RFC_cyclophosphamide\");
+      c_RFC_admin_cyclophosphamide = param(\"c_RFC_admin_cyclophosphamide\");
+      c_RFC_support_PFS = param(\"c_RFC_support_PFS\");
+      c_RFC_bone_marrow_transplantation = param(\"c_RFC_bone_marrow_transplantation\");
+      c_RFC_blood_transfusions = param(\"c_RFC_blood_transfusions\");
+      c_RFC_support_Prog= param(\"c_RFC_support_Prog\");
+      c_RFC_therapy = param(\"c_RFC_therapy\");
+      // FC
+      c_FC_rituximab = param(\"c_FC_rituximab\");
+      c_FC_admin_rituximab = param(\"c_FC_admin_rituximab\");
+      c_FC_fludarabine = param(\"c_FC_fludarabine\");
+      c_FC_admin_fludarabine = param(\"c_FC_admin_fludarabine\");
+      c_FC_cyclophosphamide = param(\"c_FC_cyclophosphamide\");
+      c_FC_admin_cyclophosphamide = param(\"c_FC_admin_cyclophosphamide\");
+      c_FC_support_PFS = param(\"c_FC_support_PFS\");
+      c_FC_bone_marrow_transplantation = param(\"c_FC_bone_marrow_transplantation\");
+      c_FC_blood_transfusions = param(\"c_FC_blood_transfusions\");
+      c_FC_support_Prog = param(\"c_FC_support_Prog\");
+      c_FC_therapy = param(\"c_FC_therapy\");
+      }
+    void pfs();
+    void init(); // to be specified
+    void handleMessage(const ssim::cMessage* msg); // to be specified
+    void cancelEvents(); // utility function
+  };
+  void IDMHesim::pfs() {
+    state = PFS;
+    report -> setUtility(0.8);
+    if (treat == 1) { // RFC
+    report -> addPointCost(state, c_RFC_rituximab);
+    report -> addPointCost(state, c_RFC_admin_rituximab);
+    report -> addPointCost(state, c_RFC_fludarabine);
+    report -> addPointCost(state, c_RFC_admin_fludarabine);
+    report -> addPointCost(state, c_RFC_cyclophosphamide);
+    report -> addPointCost(state, c_RFC_admin_cyclophosphamide);
+    report -> setCost(c_RFC_support_PFS); 
+    report -> addPointCost(state, c_RFC_bone_marrow_transplantation);
+    report -> addPointCost(state, c_RFC_blood_transfusions);
+    }
+    else { // FC
+    report -> addPointCost(state, c_FC_rituximab);
+    report -> addPointCost(state, c_FC_admin_rituximab);
+    report -> addPointCost(state, c_FC_fludarabine);
+    report -> addPointCost(state, c_FC_admin_fludarabine);
+    report -> addPointCost(state, c_FC_cyclophosphamide);
+    report -> addPointCost(state, c_FC_admin_cyclophosphamide);
+    report -> setCost(c_FC_support_PFS); 
+    report -> addPointCost(state, c_FC_bone_marrow_transplantation);
+    report -> addPointCost(state, c_FC_blood_transfusions);
+    }
+    scheduleAt(m1->random(0,0)+now(),toProg); // do we need to change the sample?
+    scheduleAt(m2->random(0,0)+now(),toExcD);
+    // scheduleAt(background.rand(std::exp(-R::rexp(1.0)), dxage+now())-dxage, toExpD);
+  }
+  /**
+      Initialise a simulation run for an individual
+  */
+  void IDMHesim::init() {
+    id++;
+    pfs();
+  }
+  /**
+      Handle receiving self-messages
+  */
+  void IDMHesim::handleMessage(const ssim::cMessage* msg) {
+    if (param(\"debug\")) Rprintf(\"id: %i, state: %i, kind: %i, previous: %f, now: %f\\n\",
+                       id, state, msg->kind, this->previousEventTime, ssim::now());
+    report->add(state, msg->kind, this->previousEventTime, ssim::now(), id);
+    cancel_events();
+    scheduleAt(15, toEOS); // End of study--Time horizon 15 years
+    switch(msg->kind) {
+    case toPFS:
+      pfs();
+      break;
+    case toProg:
+      state = Prog;
+      report -> setUtility(0.6);
+      if (treat == 1) { // RFC
+        report -> setCost(c_RFC_support_Prog + c_RFC_therapy); 
+      }
+      else{ // FC
+        report -> setCost(c_FC_support_Prog + c_FC_therapy); 
+      }
+      scheduleAt(m3->random(0,0)+now(), toExcD);
+      // scheduleAt(background.rand(std::exp(-R::rexp(1.0)), dxage+now())-dxage, toExpD);
+      break;
+    case toExcD:
+    case toExpD:
+    case toEOS:
+      ssim::Sim::stop_simulation();
+      break;
+    default:
+      REprintf(\"Invalid kind of event: %i.\\n\", msg->kind);
+      break;
+    }
+    if (id % 100000 == 0) Rcpp::checkUserInterrupt(); 
+  }
+  /**
+      Exported function: Set up the report and process, run the simulations and return a report
+  */
+  //[[Rcpp::export]]
+  List callSimHesim(int n, List param, bool indivp) {
+    Report report(n,indivp);
+    report.setPartition(0.0,100.0,param(\"partitionBy\"));
+    report.setDiscountRate(param(\"discountRate\"));    
+    IDMHesim person(param,&report);
+    runSimulations(&person, n);
+    Rcpp::List lst = report.asList();
+    lst.push_back(param,\"param\");
+    return lst;
+  }")
+
+
 ##############################################################
 ##============================================================
 ## Set parameters
@@ -418,35 +620,168 @@ simulations = function(n, param, simulator=callSim, indivp=TRUE) {
 results <- list()  # Create an empty list to store the results
 treat_values <- c(0, 1) # treat = 0, 1
 
-results <- lapply(treat_values, function(treat_value) {
-      ## Run the simulations_reduced to determine disLY_Prog_RFC and disLY_Prog_FC
-      for (i in c(0, 1)) {
-        ndata <- data.frame(treat = i)
-        param <- list(treat = i,
-                      partitionBy = 0.1,
-                      discountRate = 0.035,
-                      debug = FALSE,
-                      dxage = 61, 
-                      ## Background rate
-                      mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
-                      ages = getRates_cohort(3, 2005 - 61)$age,
-                      ## Survival models
-                      m1 = gsm_design(m1, newdata = ndata),
-                      m2 = gsm_design(m2, newdata = ndata),
-                      m3 = gsm_design(m3, newdata = ndata))
+## hesim transition models:)
+prepare_input_data = function(strategies=NULL,
+                              n_patients=NULL, patients=NULL,
+                              tmat=NULL, states=NULL, state_names=NULL, ...) {
+    stopifnot(!(is.null(n_patients) && is.null(patients)),
+              !(is.null(tmat) && is.null(states) && is.null(state_names)),
+              is.null(patients) || "patient_id" %in% names(patients))
+    ## strategies
+    if (is.null(strategies))
+        strategies = data.frame(strategy_id = 1)
+    ## patients
+    if (is.null(patients))
+        patients = data.frame(patient_id = 1:n_patients, ...)
+    ## states
+    if (is.null(states) && !is.null(tmat))
+        states = data.frame( # Non-death health states
+            state_id = 1:nrow(tmat),
+            state_name = colnames(tmat)
+        )
+    if (is.null(states) && !is.null(state_names))
+        states = data.frame( # Non-death health states
+            state_id = 1:length(state_names),
+            state_name = state_names
+        )
+    ## "hesim data"
+    hesim_dat = hesim_data(strategies = strategies,
+                           patients = patients, 
+                           states = states)
+    transmod_data = hesim::expand(hesim_dat, by = c("strategies", "patients"))
+    ## Add some default columns to X
+    if (!("cons" %in% names(transmod_data)))
+        transmod_data$cons = 1
+    if (!("(Intercept)" %in% names(transmod_data)))
+        transmod_data[["(Intercept)"]] = 1
+    return(transmod_data)
+}
+tmat = matrix(c(NA,1, NA,NA), 2,2,TRUE)
+colnames(tmat) = rownames(tmat) = c("Base", "Next")
+transmod_data = prepare_input_data(n_patients = 1, tmat=tmat, 
+                                   strategies = data.frame(strategy_id = 1:2))
+transmod_data = transmod_data[,treat := 1]
+transmod_data = transmod_data[strategy_id==1, treat := 0]
+transmod_params1 <- params_surv_list(create_params(m1Hesim,uncertainty="none"))
+transmod1 <- create_IndivCtstmTrans(transmod_params1, 
+                                     input_data = transmod_data,
+                                     trans_mat = tmat,
+                                     clock = "reset")
+transmod_params2 <- params_surv_list(create_params(m2Hesim,uncertainty="none"))
+transmod2 <- create_IndivCtstmTrans(transmod_params2, 
+                                     input_data = transmod_data,
+                                     trans_mat = tmat,
+                                     clock = "reset")
+transmod_params3 <- params_surv_list(create_params(m3Hesim,uncertainty="none"))
+transmod3 <- create_IndivCtstmTrans(transmod_params3, 
+                                     input_data = transmod_data,
+                                     trans_mat = tmat,
+                                     clock = "reset")
 
-        sim <- simulations_reduced(1e6, param = param, indivp = FALSE)
-        
-        if (i == 0) {
-          disLY_Prog_FC <- (sum(subset(sim$pt, state %in% c("Prog"))$pt)) / sim$n
-        } else{
-          disLY_Prog_RFC <- (sum(subset(sim$pt, state %in% c("Prog"))$pt)) / sim$n
-        }
-      }
-      
+
+## ## for a full hesim model:
+## tmat = matrix(c(NA,1,2,
+##                 NA,NA,3,
+##                 NA,NA,NA), 3,3,TRUE)
+## colnames(tmat) = rownames(tmat) = c("PFS", "Prog", "Death")
+## n_patients = 1e6
+## transmod_data = prepare_input_data(n_patients = n_patients, tmat=tmat, age=50,
+##                                    strategies = data.frame(strategy_id = 1:2))
+## transmod_data = transmod_data[,treat := 1]
+## transmod_data = transmod_data[strategy_id==1, treat := 0]
+## transmod_params <- params_surv_list(create_params(m1Hesim,uncertainty="none"),
+##                                     create_params(m2Hesim,uncertainty="none"),
+##                                     create_params(m3Hesim,uncertainty="none"))
+## transmod <- create_IndivCtstmTrans(transmod_params, 
+##                                      input_data = transmod_data,
+##                                      trans_mat = tmat,
+##                                      clock = "reset",
+##                                      start_age = 50)
+## econmod <- IndivCtstm$new(trans_model = transmod,
+##                           utility_model = NULL,
+##                           cost_models = NULL)
+## system.time(econmod$sim_disease(max_t = 60, max_age = 120))
+
+for (i in c(0, 1)) {
+    ndata <- data.frame(treat = i)
+    param <- list(treat = i,
+                  partitionBy = 0.1,
+                  discountRate = 0.035,
+                  debug = FALSE,
+                  dxage = 61, 
+                  ## Background rate
+                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                  ages = getRates_cohort(3, 2005 - 61)$age,
+                  ## Survival models
+                  m1 = gsm_design(m1, newdata = ndata),
+                  m2 = gsm_design(m2, newdata = ndata),
+                  m3 = gsm_design(m3, newdata = ndata))
+    sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
+    if (i == 0) {
+        disLY_Prog_FC <- (sum(subset(sim$pt, state %in% c("Prog"))$pt)) / sim$n
+    } else{
+        disLY_Prog_RFC <- (sum(subset(sim$pt, state %in% c("Prog"))$pt)) / sim$n
+    }
+}
+
+set.seed(12345)
+resultsHesim <- lapply(treat_values, function(treat_value) {
+      ## Run the simulations_reduced to determine disLY_Prog_RFC and disLY_Prog_FC
       ## Discounted life years (rate = 0.035) spent at the progression state
-      disLY_Prog_RFC
-      disLY_Prog_FC
+      ## disLY_Prog_RFC
+      ## disLY_Prog_FC
+      ## Run the complete model
+      ndata <- data.frame(treat = treat_value)
+      param <- list(treat = treat_value,
+                    partitionBy = 0.1,
+                    discountRate = 0.035,
+                    debug = FALSE,
+                    dxage = 61, 
+                    ## Background rate
+                    mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
+                    ages = getRates_cohort(3, 2005 - 61)$age,
+                    ## Survival models
+                    m1 = transmod1,
+                    m2 = transmod2,
+                    m3 = transmod3,
+                    ## Cost data
+                    ## RFC
+                    ## PFS
+                    c_RFC_rituximab = 10113,                  # Costs of rituximab                              £10113
+                    c_RFC_admin_rituximab = 1224,             # Administration costs of rituximab                £1224
+                    c_RFC_fludarabine = 2776,                 # Cost of fludarabine                              £2776
+                    c_RFC_admin_fludarabine = 1109,           # Administration costs of fludarabine              £1109
+                    c_RFC_cyclophosphamide = 21,              # Costs of cyclophosphamide                          £21
+                    c_RFC_admin_cyclophosphamide = 1109,      # Administration costs of cyclophosphamide         £1109
+                    c_RFC_support_PFS = 28*12,                # Yearly costs of supportive care in PFS          £28*12
+                    c_RFC_bone_marrow_transplantation = 592,  # Cost of bone marrow transplantation               £592
+                    c_RFC_blood_transfusions = 640,           # Cost of blood transfusions                        £640
+                    ## Prog
+                    c_RFC_support_Prog = 84*12,               # Yearly costs of supportive care in Progression  £84*12
+                    c_RFC_therapy      = (5179/((disLY_Prog_RFC + disLY_Prog_FC)/2*12))*12,
+                    # Yearly (monthly*12)  cost of RFC's second-line and subsequent therapy £5179 weighted by the length of stay
+                    ## FC
+                    ## PFS
+                    c_FC_rituximab = 0,                      # Costs of rituximab                                   £0
+                    c_FC_admin_rituximab = 0,                # Administration costs of rituximab                    £0
+                    c_FC_fludarabine = 2790,                 # Cost of fludarabine                               £2790
+                    c_FC_admin_fludarabine = 1115,           # Administration costs of fludarabine               £1115
+                    c_FC_cyclophosphamide = 22,              # Costs of cyclophosphamide                           £22
+                    c_FC_admin_cyclophosphamide = 1115,      # Administration costs of cyclophosphamide          £1115
+                    c_FC_support_PFS = 28*12,                # Yearly costs of supportive care in PFS             £28
+                    c_FC_bone_marrow_transplantation = 360,  # Cost of bone marrow transplantation                £360
+                    c_FC_blood_transfusions = 507,           # Cost of blood transfusions                         £507
+                    ## Prog
+                    c_FC_support_Prog = 84*12,               # Yearly costs of supportive care in Progression.  £84*12
+                    c_FC_therapy   = (5179/((disLY_Prog_RFC + disLY_Prog_FC)/2*12))*12
+                    # Yearly (monthly*12) cost of FC's second-line and subsequent therapy £5179 weighted by the length of stay
+                    )
+      sim <- simulations(1e5, param = param, simulator=callSimHesim, indivp = FALSE)
+      return(sim)
+})
+
+
+results <- lapply(treat_values, function(treat_value) {
       
       ## Run the complete model
       ndata <- data.frame(treat = treat_value)
@@ -495,7 +830,7 @@ results <- lapply(treat_values, function(treat_value) {
                     c_FC_therapy   = (5179/((disLY_Prog_RFC + disLY_Prog_FC)/2*12))*12
                     # Yearly (monthly*12) cost of FC's second-line and subsequent therapy £5179 weighted by the length of stay
                     )
-      sim <- simulations(1e6, param = param, indivp = FALSE)
+      sim <- simulations(1e5, param = param, indivp = FALSE)
       return(sim)
 })
 
@@ -642,8 +977,6 @@ ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab,
 
 save_as_docx(ft, path="../Output/05_rel_microsim.docx")
 
-################################################################
-setwd(original_wd)  # Reset to the original working directory
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

@@ -8,13 +8,6 @@
 ##            Med Decis Making. 2017 May;37(4):340–52.
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial © 2017 by Williams C. et al is licensed under CC BY 3.0. 
 
-## Set the wd as where this R file is
-if (require("rstudioapi") && isAvailable()) {
-  original_wd <- getwd()  # Store the original working directory
-  wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  setwd(wd)
-}
-
 ##############################################################
 ##============================================================
 ## Install/Read packages
@@ -405,8 +398,6 @@ plot <- ggarrange(plot1, plot2, ncol = 2,
 plot
 ggsave("../Output/08c_rel_CEplane_CEAC.png", plot, width = 10, height = 7, units = "in", dpi = 300)
 ################################################################
-setwd(original_wd)  # Reset to the original working directory
-################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 
 # multiple timescales for health technology assessment
@@ -425,4 +416,4 @@ setwd(original_wd)  # Reset to the original working directory
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-      
+

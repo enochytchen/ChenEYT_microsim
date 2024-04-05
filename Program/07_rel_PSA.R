@@ -3,13 +3,6 @@
 ##          Relative survival framework
 ## Caution: Must have installed the lastest Rtools and R4.2.2+
 
-## Set the wd as where this R file is
-if (require("rstudioapi") && isAvailable()) {
-  original_wd <- getwd()  # Store the original working directory
-  wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  setwd(wd)
-}
-
 ## Set seed for coherency
 set.seed(12345)
 ##############################################################
@@ -584,8 +577,6 @@ for (iteration in 1:m) {
 }
 
 save(PSA_results, file = "../Data/07_rel_PSA.RData")
-################################################################
-setwd(original_wd)  # Reset to the original working directory
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

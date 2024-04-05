@@ -4,12 +4,6 @@
 ## Notes:   Data from http://www.mortality.org/
 ##          Death rates (period 1x1)
 
-## Set the wd as where this R file is
-if (require("rstudioapi") && isAvailable()) {
-  original_wd <- getwd()  # Store the original working directory
-  wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
-  setwd(wd)
-}
 ##############################################################
 ##============================================================
 ## Install/Read packages
@@ -55,7 +49,7 @@ data <- do.call(rbind.data.frame, data_list)
 ##============================================================
 ##############################################################
 colnames(data) <- c("year", "age", "rate2", "rate1", "rate3", "country")
-data <- dplyr::mutate_at(data, vars(1:5), as.numeric)
+data <- dplyr::mutate_at(data, vars(1:5), as.numeric) # warnings -- missing data?
 data <- subset(data, year >= 1950 & age <= 100)  # Keep year >= 2000
 data <- data[, c("year", "age", "rate1", "rate2")] # Be aware of male and female
                                                    # Eventually, sex 1 m, 2 f.
@@ -133,8 +127,6 @@ ggplot() +
   
 ## Compress and label data
 saveRDS(data, "../Data/01b_popmort.rds")
-################################################################
-setwd(original_wd)  # Reset to the original working directory
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

@@ -48,9 +48,18 @@ data <- do.call(rbind.data.frame, data_list)
 ## Organise the data
 ##============================================================
 ##############################################################
+## Rename the columns
 colnames(data) <- c("year", "age", "rate2", "rate1", "rate3", "country")
-data <- dplyr::mutate_at(data, vars(1:5), as.numeric) # warnings -- missing data?
-data <- subset(data, year >= 1950 & age <= 100)  # Keep year >= 2000
+## Make all the missing as NA
+data[data == "."] <- NA
+## Make all age 110+ as 110 for making them numberic later
+data <- data %>% 
+        mutate(age=ifelse(age=="110+", 110, age))
+## Remove rows with NA values
+data <- data %>% 
+        drop_na()
+data <- dplyr::mutate_at(data, vars(1:5), as.numeric) 
+data <- subset(data, year >= 1950 & age <= 100)    # Keep year >= 2000
 data <- data[, c("year", "age", "rate1", "rate2")] # Be aware of male and female
                                                    # Eventually, sex 1 m, 2 f.
 data <- tidyr::pivot_longer(data, cols = c("rate1", "rate2"), names_to = "sex", values_to = "rate")
@@ -127,6 +136,9 @@ ggplot() +
   
 ## Compress and label data
 saveRDS(data, "../Data/01b_popmort.rds")
+################################################################
+getwd()
+setwd("../Program/")
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

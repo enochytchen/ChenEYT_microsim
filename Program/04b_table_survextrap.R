@@ -1,14 +1,15 @@
 ## Filename: 04b_table_survextrap
 ## Purpose: Caluclate area under curve for selected time points
 ##          Observed: Hallek 2010, Fischer 2016
-##          Extrapolated: Williams 2017, Microsimulation
+##          Extrapolated: Semi-Markov with stand parametric models (Williams 2017), 
+##                        Semi-Markov with flexible parametric models
+##                        Microsimulation with stand parametric models (same distribution as Williams 2017)
+##                        Microsimulation with flexible parametric models within an all-cause survival framework
+##                        Microsimulation with flexible parametric models within a relative survival framework
 ## Reference: Williams C, Lewsey JD, Briggs AH, Mackay DF. 
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. 
 ##            Med Decis Making. 2017 May;37(4):340–52.
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial © 2017 by Williams C. et al is licensed under CC BY 3.0. 
-
-## Set seed for coherency
-set.seed(12345)
 
 ##############################################################
 ##============================================================
@@ -40,9 +41,9 @@ fischer_RFC_4yr_surv <- summary(mfit2, times=4)$surv[2]
 fischer_FC_8yr_surv <- summary(mfit2, times=8)$surv[1]
 fischer_RFC_8yr_surv <- summary(mfit2, times=8)$surv[2]
 
-###################
-## Williams 2017 ##
-###################
+#################################################################
+## Semi-Markov with standard parametric models (Williams 2017) ##
+#################################################################
 williams2017 <- read.table("../Data/01a_williams2017.txt", header = TRUE)
 colnames(williams2017)
 
@@ -55,59 +56,143 @@ williams_RFC_8yr_surv <- subset(williams2017, treat == 1 & time == 8)$surv
 williams_FC_15yr_surv <- subset(williams2017, treat == 0 & time == 15)$surv
 williams_RFC_15yr_surv <- subset(williams2017, treat == 1 & time == 15)$surv
 
-#####################
-## Microsimulation ##
-#####################
-## Run the microsimulation model to obtain the results
-## source("04a_rel_survextrap.R")
+#################################################
+## Semi-Markov with flexible parametric models ##
+#################################################
+semiMarkov_fpm <- read.table("../Data/04a_extrap_semiMarkov_fpm.txt", header = TRUE)
+colnames(semiMarkov_fpm)
+
+semiMarkov_fpm_FC_4yr_surv <- subset(semiMarkov_fpm, treat == 0 & time == 4)$surv
+semiMarkov_fpm_RFC_4yr_surv <- subset(semiMarkov_fpm, treat == 1 & time == 4)$surv
+
+semiMarkov_fpm_FC_8yr_surv <- subset(semiMarkov_fpm, treat == 0 & time == 8)$surv
+semiMarkov_fpm_RFC_8yr_surv <- subset(semiMarkov_fpm, treat == 1 & time == 8)$surv
+
+semiMarkov_fpm_FC_15yr_surv <- subset(semiMarkov_fpm, treat == 0 & time == 15)$surv
+semiMarkov_fpm_RFC_15yr_surv <- subset(semiMarkov_fpm, treat == 1 & time == 15)$surv
+
+#####################################################
+## Microsimulation with standard parametric models ##
+#####################################################
 ## Read the results
-results_FC <- readRDS("../Data/04a_rel_survextrap_results_FC.rds")
-results_RFC <- readRDS("../Data/04a_rel_survextrap_results_RFC.rds")
+results_microsim_williams_ac_FC <- readRDS("../Data/04a_extrap_microsim_williams_ac_FC.rds")
+results_microsim_williams_ac_RFC <- readRDS("../Data/04a_extrap_microsim_williams_ac_RFC.rds")
 
 ## Obtain survival at times 4, 8, and 15 years
-prev_FC <- as.data.frame(results_FC$prev)
-prev_FC$prob <- prev_FC$number / results_FC$n
+prev_FC <- as.data.frame(results_microsim_williams_ac_FC$prev)
+prev_FC$prob <- prev_FC$number / results_microsim_williams_ac_FC$n
 prev_FC$time <- round(prev_FC$time, digits = 1)
 
-prev_RFC <- as.data.frame(results_RFC$prev)
-prev_RFC$prob <- prev_RFC$number / results_RFC$n
+prev_RFC <- as.data.frame(results_microsim_williams_ac_RFC$prev)
+prev_RFC$prob <- prev_RFC$number / results_microsim_williams_ac_RFC$n
 prev_RFC$time <- round(prev_RFC$time, digits = 1)
 
-microsim_FC_4yr_surv_PFS <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "PFS"]
-microsim_FC_4yr_surv_Prog <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "Prog"]
-microsim_FC_4yr_surv <- microsim_FC_4yr_surv_PFS + microsim_FC_4yr_surv_Prog
+microsim_williams_ac_FC_4yr_surv_PFS <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "PFS"]
+microsim_williams_ac_FC_4yr_surv_Prog <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "Prog"]
+microsim_williams_ac_FC_4yr_surv <- microsim_williams_ac_FC_4yr_surv_PFS + microsim_williams_ac_FC_4yr_surv_Prog
 
-microsim_RFC_4yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "PFS"]
-microsim_RFC_4yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "Prog"]
-microsim_RFC_4yr_surv <- microsim_RFC_4yr_surv_PFS + microsim_RFC_4yr_surv_Prog
+microsim_williams_ac_RFC_4yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "PFS"]
+microsim_williams_ac_RFC_4yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "Prog"]
+microsim_williams_ac_RFC_4yr_surv <- microsim_williams_ac_RFC_4yr_surv_PFS + microsim_williams_ac_RFC_4yr_surv_Prog
 
-microsim_FC_8yr_surv_PFS <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "PFS"]
-microsim_FC_8yr_surv_Prog <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "Prog"]
-microsim_FC_8yr_surv <- microsim_FC_8yr_surv_PFS + microsim_FC_8yr_surv_Prog
+microsim_williams_ac_FC_8yr_surv_PFS <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "PFS"]
+microsim_williams_ac_FC_8yr_surv_Prog <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "Prog"]
+microsim_williams_ac_FC_8yr_surv <- microsim_williams_ac_FC_8yr_surv_PFS + microsim_williams_ac_FC_8yr_surv_Prog
 
-microsim_RFC_8yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "PFS"]
-microsim_RFC_8yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "Prog"]
-microsim_RFC_8yr_surv <- microsim_RFC_8yr_surv_PFS + microsim_RFC_8yr_surv_Prog
+microsim_williams_ac_RFC_8yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "PFS"]
+microsim_williams_ac_RFC_8yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "Prog"]
+microsim_williams_ac_RFC_8yr_surv <- microsim_williams_ac_RFC_8yr_surv_PFS + microsim_williams_ac_RFC_8yr_surv_Prog
 
-microsim_FC_15yr_surv_PFS <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "PFS"]
-microsim_FC_15yr_surv_Prog <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "Prog"]
-microsim_FC_15yr_surv <- microsim_FC_15yr_surv_PFS + microsim_FC_15yr_surv_Prog
+microsim_williams_ac_FC_15yr_surv_PFS <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "PFS"]
+microsim_williams_ac_FC_15yr_surv_PFS <- 0
+microsim_williams_ac_FC_15yr_surv_Prog <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "Prog"]
+microsim_williams_ac_FC_15yr_surv <- microsim_williams_ac_FC_15yr_surv_PFS + microsim_williams_ac_FC_15yr_surv_Prog
 
-microsim_RFC_15yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "PFS"]
-microsim_RFC_15yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "Prog"]
-microsim_RFC_15yr_surv <- microsim_RFC_15yr_surv_PFS + microsim_RFC_15yr_surv_Prog
+microsim_williams_ac_RFC_15yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "PFS"]
+microsim_williams_ac_RFC_15yr_surv_PFS <- 0
+microsim_williams_ac_RFC_15yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "Prog"]
+microsim_williams_ac_RFC_15yr_surv <- microsim_williams_ac_RFC_15yr_surv_PFS + microsim_williams_ac_RFC_15yr_surv_Prog
 
-## Store the results in one list
-variables <- c("fischer_FC_4yr_surv", "fischer_RFC_4yr_surv", "fischer_FC_8yr_surv", "fischer_RFC_8yr_surv",
-               "williams_FC_4yr_surv", "williams_RFC_4yr_surv", "williams_FC_8yr_surv", "williams_RFC_8yr_surv", "williams_FC_15yr_surv", "williams_RFC_15yr_surv",
-               "microsim_FC_4yr_surv", "microsim_RFC_4yr_surv", "microsim_FC_8yr_surv", "microsim_RFC_8yr_surv", "microsim_FC_15yr_surv", "microsim_RFC_15yr_surv")
+############################################################################################
+## Microsimulation with flexible parametric models within an all-cause survival framework ##
+############################################################################################
+## Read the results
+results_microsim_fpm_ac_FC <- readRDS("../Data/04a_extrap_microsim_fpm_ac_FC.rds")
+results_microsim_fpm_ac_RFC <- readRDS("../Data/04a_extrap_microsim_fpm_ac_RFC.rds")
 
-surv_list <- mget(variables)
+## Obtain survival at times 4, 8, and 15 years
+prev_FC <- as.data.frame(results_microsim_fpm_ac_FC$prev)
+prev_FC$prob <- prev_FC$number / results_microsim_fpm_ac_FC$n
+prev_FC$time <- round(prev_FC$time, digits = 1)
 
-surv_list <- lapply(surv_list, function(x) {
-  formatted <- format(round(x, digits = 2), nsmall = 2)
-  return(formatted)
-})
+prev_RFC <- as.data.frame(results_microsim_fpm_ac_RFC$prev)
+prev_RFC$prob <- prev_RFC$number / results_microsim_fpm_ac_RFC$n
+prev_RFC$time <- round(prev_RFC$time, digits = 1)
+
+microsim_fpm_ac_FC_4yr_surv_PFS <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "PFS"]
+microsim_fpm_ac_FC_4yr_surv_Prog <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "Prog"]
+microsim_fpm_ac_FC_4yr_surv <- microsim_fpm_ac_FC_4yr_surv_PFS + microsim_fpm_ac_FC_4yr_surv_Prog
+
+microsim_fpm_ac_RFC_4yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "PFS"]
+microsim_fpm_ac_RFC_4yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "Prog"]
+microsim_fpm_ac_RFC_4yr_surv <- microsim_fpm_ac_RFC_4yr_surv_PFS + microsim_fpm_ac_RFC_4yr_surv_Prog
+
+microsim_fpm_ac_FC_8yr_surv_PFS <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "PFS"]
+microsim_fpm_ac_FC_8yr_surv_Prog <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "Prog"]
+microsim_fpm_ac_FC_8yr_surv <- microsim_fpm_ac_FC_8yr_surv_PFS + microsim_fpm_ac_FC_8yr_surv_Prog
+
+microsim_fpm_ac_RFC_8yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "PFS"]
+microsim_fpm_ac_RFC_8yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "Prog"]
+microsim_fpm_ac_RFC_8yr_surv <- microsim_fpm_ac_RFC_8yr_surv_PFS + microsim_fpm_ac_RFC_8yr_surv_Prog
+
+microsim_fpm_ac_FC_15yr_surv_PFS <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "PFS"]
+microsim_fpm_ac_FC_15yr_surv_Prog <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "Prog"]
+microsim_fpm_ac_FC_15yr_surv <- microsim_fpm_ac_FC_15yr_surv_PFS + microsim_fpm_ac_FC_15yr_surv_Prog
+
+microsim_fpm_ac_RFC_15yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "PFS"]
+microsim_fpm_ac_RFC_15yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "Prog"]
+microsim_fpm_ac_RFC_15yr_surv <- microsim_fpm_ac_RFC_15yr_surv_PFS + microsim_fpm_ac_RFC_15yr_surv_Prog
+
+
+##########################################################################################
+## Microsimulation with flexible parametric models within a relative survival framework ##
+##########################################################################################
+## Read the results
+results_microsim_fpm_rel_FC <- readRDS("../Data/04a_extrap_microsim_fpm_rel_FC.rds")
+results_microsim_fpm_rel_RFC <- readRDS("../Data/04a_extrap_microsim_fpm_rel_RFC.rds")
+
+## Obtain survival at times 4, 8, and 15 years
+prev_FC <- as.data.frame(results_microsim_fpm_rel_FC$prev)
+prev_FC$prob <- prev_FC$number / results_microsim_fpm_rel_FC$n
+prev_FC$time <- round(prev_FC$time, digits = 1)
+
+prev_RFC <- as.data.frame(results_microsim_fpm_rel_RFC$prev)
+prev_RFC$prob <- prev_RFC$number / results_microsim_fpm_rel_RFC$n
+prev_RFC$time <- round(prev_RFC$time, digits = 1)
+
+microsim_fpm_rel_FC_4yr_surv_PFS <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "PFS"]
+microsim_fpm_rel_FC_4yr_surv_Prog <- prev_FC$prob[prev_FC$time == 4 & prev_FC$state == "Prog"]
+microsim_fpm_rel_FC_4yr_surv <- microsim_fpm_rel_FC_4yr_surv_PFS + microsim_fpm_rel_FC_4yr_surv_Prog
+
+microsim_fpm_rel_RFC_4yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "PFS"]
+microsim_fpm_rel_RFC_4yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 4 & prev_RFC$state == "Prog"]
+microsim_fpm_rel_RFC_4yr_surv <- microsim_fpm_rel_RFC_4yr_surv_PFS + microsim_fpm_rel_RFC_4yr_surv_Prog
+
+microsim_fpm_rel_FC_8yr_surv_PFS <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "PFS"]
+microsim_fpm_rel_FC_8yr_surv_Prog <- prev_FC$prob[prev_FC$time == 8 & prev_FC$state == "Prog"]
+microsim_fpm_rel_FC_8yr_surv <- microsim_fpm_rel_FC_8yr_surv_PFS + microsim_fpm_rel_FC_8yr_surv_Prog
+
+microsim_fpm_rel_RFC_8yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "PFS"]
+microsim_fpm_rel_RFC_8yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 8 & prev_RFC$state == "Prog"]
+microsim_fpm_rel_RFC_8yr_surv <- microsim_fpm_rel_RFC_8yr_surv_PFS + microsim_fpm_rel_RFC_8yr_surv_Prog
+
+microsim_fpm_rel_FC_15yr_surv_PFS <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "PFS"]
+microsim_fpm_rel_FC_15yr_surv_Prog <- prev_FC$prob[prev_FC$time == 15 & prev_FC$state == "Prog"]
+microsim_fpm_rel_FC_15yr_surv <- microsim_fpm_rel_FC_15yr_surv_PFS + microsim_fpm_rel_FC_15yr_surv_Prog
+
+microsim_fpm_rel_RFC_15yr_surv_PFS <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "PFS"]
+microsim_fpm_rel_RFC_15yr_surv_Prog <- prev_RFC$prob[prev_RFC$time == 15 & prev_RFC$state == "Prog"]
+microsim_fpm_rel_RFC_15yr_surv <- microsim_fpm_rel_RFC_15yr_surv_PFS + microsim_fpm_rel_RFC_15yr_surv_Prog
 
 ##############################################################
 ##============================================================
@@ -133,9 +218,9 @@ print(paste("Fischer 2016,", "RFC,", "AUC for time <= 3.94 years:", var_list[["f
 var_list[["fischer_FC_8yr"]] <- rmst_mfit3$RMST.arm0$rmst[[1]]
 print(paste("Fischer 2016,", "FC,", "AUC for time <= 3.94 years:", var_list[["fischer_FC_8yr"]]))
 
-###################
-## Williams 2017 ##
-###################
+#################################################################
+## Semi-Markov with standard parametric models (Williams 2017) ##
+#################################################################
 ## Define the time intervals
 time_intervals <- c(4, 8, 15)
 
@@ -164,34 +249,140 @@ for (i in time_intervals) {
   print(paste("Williams 2017", "FC", "Area under curve for time <= ", i, "and treat = FC: ", value))
 }
 
-#####################
-## Microsimulation ##
-#####################
+#################################################
+## Semi-Markov with flexible parametric models ##
+#################################################
+## Define the time intervals
+time_intervals <- c(4, 8, 15)
+
+## Ensure data is sorted by time
+semiMarkov_fpm <- semiMarkov_fpm[order(c(semiMarkov_fpm$treat,semiMarkov_fpm$time)), ]
+
+## Loop over the time intervals
+for (i in time_intervals) {
+  ## subset data to time <= i
+  semiMarkov_fpm_subset <- semiMarkov_fpm[semiMarkov_fpm$time <= i, ]
+  
+  ## further split into FC and RFC subsets based on 'treat' column
+  semiMarkov_fpm_subset_FC <- semiMarkov_fpm_subset[grepl(0, semiMarkov_fpm_subset$treat), ]
+  semiMarkov_fpm_subset_RFC <- semiMarkov_fpm_subset[grepl(1, semiMarkov_fpm_subset$treat), ]
+  
+  ## calculate area under the curve for 'surv' with time <= i for RFC 
+  value <- trapz(semiMarkov_fpm_subset_RFC$time, semiMarkov_fpm_subset_RFC$surv)
+  var <- paste("semiMarkov_fpm_RFC_",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Semi-Markov: FPM", "RFC", "Area under curve for time <= ", i, "and treat = RFC: ", value))
+  
+  ## calculate area under the curve for 'surv' with time <= i for FC
+  value <- trapz(semiMarkov_fpm_subset_FC$time, semiMarkov_fpm_subset_FC$surv)
+  var <- paste("semiMarkov_fpm_FC_",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Semi-Markov: FPM", "FC", "Area under curve for time <= ", i, "and treat = FC: ", value))
+}
+
+############################################################################################
+## Microsimulation with standard parametric models within an all-cause survival framework ##
+############################################################################################
 ## Define the time intervals
 time_intervals <- c(4, 8, 15)
 
 ## loop over the time intervals
 for (i in time_intervals) {
-    report <- lapply(list(results_FC, results_RFC), function(sim){
-      # create a subset of the data where 'time' is less than or equal to i
-      sim$pt_subset <- subset(sim$pt, time <= i)
-      
-      # calculate LY using the subset and print it
-      LY <- (sum(sim$pt_subset$pt) - sum(subset(sim$pt_subset, state %in% c("ExpD", "ExcD"))$pt)) / sim$n
-})
-
-## FC, treat = 0
-value <- report[[1]]
-var <- paste("microsim_FC_",i,"yr")
-var_list[[var]] <- value
-print(paste("Microsimulation", "FC", "Area under curve for time <=", i, ": ", value))
-
-## RFC, treat = 1
-value <- report[[2]]
-var <- paste("microsim_RFC_",i,"yr")
-var_list[[var]] <- value
-print(paste("Microsimulation", "RFC", "Area under curve for time <=", i, ": ", value))
+  report <- lapply(list(results_microsim_williams_ac_FC, results_microsim_williams_ac_RFC), function(sim){
+    # create a subset of the data where 'time' is less than or equal to i
+    sim$pt_subset <- subset(sim$pt, time <= i)
+    
+    # calculate LY using the subset and print it
+    LY <- (sum(sim$pt_subset$pt) - sum(subset(sim$pt_subset, state %in% c("AcD"))$pt)) / sim$n
+  })
+  
+  ## FC, treat = 0
+  value <- report[[1]]
+  var <- paste("microsim_williams_ac_FC",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Microsimulation: SPM, ASF", "FC", "Area under curve for time <=", i, ": ", value))
+  
+  ## RFC, treat = 1
+  value <- report[[2]]
+  var <- paste("microsim_williams_ac_RFC",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Microsimulation: SPM, ASF", "RFC", "Area under curve for time <=", i, ": ", value))
 }
+
+############################################################################################
+## Microsimulation with flexible parametric models within an all-cause survival framework ##
+############################################################################################
+## Define the time intervals
+time_intervals <- c(4, 8, 15)
+
+## loop over the time intervals
+for (i in time_intervals) {
+  report <- lapply(list(results_microsim_fpm_ac_FC, results_microsim_fpm_ac_RFC), function(sim){
+    # create a subset of the data where 'time' is less than or equal to i
+    sim$pt_subset <- subset(sim$pt, time <= i)
+    
+    # calculate LY using the subset and print it
+    LY <- (sum(sim$pt_subset$pt) - sum(subset(sim$pt_subset, state %in% c("AcD"))$pt)) / sim$n
+  })
+  
+  ## FC, treat = 0
+  value <- report[[1]]
+  var <- paste("microsim_fpm_ac_FC",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Microsimulation: FPM, RSF", "FC", "Area under curve for time <=", i, ": ", value))
+  
+  ## RFC, treat = 1
+  value <- report[[2]]
+  var <- paste("microsim_fpm_ac_RFC",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Microsimulation: FPM, RSF", "RFC", "Area under curve for time <=", i, ": ", value))
+}
+
+##########################################################################################
+## Microsimulation with flexible parametric models within a relative survival framework ##
+##########################################################################################
+## Define the time intervals
+time_intervals <- c(4, 8, 15)
+
+## loop over the time intervals
+for (i in time_intervals) {
+  report <- lapply(list(results_microsim_fpm_rel_FC, results_microsim_fpm_rel_RFC), function(sim){
+    # create a subset of the data where 'time' is less than or equal to i
+    sim$pt_subset <- subset(sim$pt, time <= i)
+    
+    # calculate LY using the subset and print it
+    LY <- (sum(sim$pt_subset$pt) - sum(subset(sim$pt_subset, state %in% c("ExpD", "ExcD"))$pt)) / sim$n
+  })
+  
+  ## FC, treat = 0
+  value <- report[[1]]
+  var <- paste("microsim_fpm_rel_FC",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Microsimulation: FPM, RSF", "FC", "Area under curve for time <=", i, ": ", value))
+  
+  ## RFC, treat = 1
+  value <- report[[2]]
+  var <- paste("microsim_fpm_rel_RFC",i,"yr")
+  var_list[[var]] <- value
+  print(paste("Microsimulation: FPM, RSF", "RFC", "Area under curve for time <=", i, ": ", value))
+}
+
+###################################
+## Store the results in one list ##
+###################################
+variables <- c("fischer_FC_4yr_surv", "fischer_RFC_4yr_surv", "fischer_FC_8yr_surv", "fischer_RFC_8yr_surv",
+               "williams_FC_4yr_surv", "williams_RFC_4yr_surv", "williams_FC_8yr_surv", "williams_RFC_8yr_surv", "williams_FC_15yr_surv", "williams_RFC_15yr_surv",
+               "semiMarkov_fpm_FC_4yr_surv", "semiMarkov_fpm_RFC_4yr_surv", "semiMarkov_fpm_FC_8yr_surv", "semiMarkov_fpm_RFC_8yr_surv", "semiMarkov_fpm_FC_15yr_surv", "semiMarkov_fpm_RFC_15yr_surv",
+               "microsim_williams_ac_FC_4yr_surv", "microsim_williams_ac_RFC_4yr_surv", "microsim_williams_ac_FC_8yr_surv", "microsim_williams_ac_RFC_8yr_surv", "microsim_williams_ac_FC_15yr_surv", "microsim_williams_ac_RFC_15yr_surv",
+               "microsim_fpm_ac_FC_4yr_surv", "microsim_fpm_ac_RFC_4yr_surv", "microsim_fpm_ac_FC_8yr_surv", "microsim_fpm_ac_RFC_8yr_surv", "microsim_fpm_ac_FC_15yr_surv", "microsim_fpm_ac_RFC_15yr_surv",
+               "microsim_fpm_rel_FC_4yr_surv", "microsim_fpm_rel_RFC_4yr_surv", "microsim_fpm_rel_FC_8yr_surv", "microsim_fpm_rel_RFC_8yr_surv", "microsim_fpm_rel_FC_15yr_surv", "microsim_fpm_rel_RFC_15yr_surv")
+
+surv_list <- mget(variables)
+
+surv_list <- lapply(surv_list, function(x) {
+  formatted <- format(round(x, digits = 2), nsmall = 2)
+  return(formatted)
+})
 
 ##############################################################
 ##============================================================
@@ -206,12 +397,19 @@ var_list <- lapply(var_list, function(x) {
 
 var_matrix <- matrix(
   c("FC", "Observed", var_list$fischer_FC_4yr, var_list$fischer_FC_8yr, NA, surv_list$fischer_FC_4yr_surv, surv_list$fischer_FC_8yr_surv, NA, 
-    NA, "Semi-Markov", var_list$`williams_FC_ 4 yr`, var_list$`williams_FC_ 8 yr`, var_list$`williams_FC_ 15 yr`, surv_list$williams_FC_4yr_surv, surv_list$williams_FC_8yr_surv, surv_list$williams_FC_15yr_surv,
-    NA, "Microsimulation", var_list$`microsim_FC_ 4 yr`, var_list$`microsim_FC_ 8 yr`, var_list$`microsim_FC_ 15 yr`, surv_list$microsim_FC_4yr_surv, surv_list$microsim_FC_8yr_surv, surv_list$microsim_FC_15yr_surv,
+    NA, "Semi-Markov: SPM (Williams 2017)", var_list$`williams_FC_ 4 yr`, var_list$`williams_FC_ 8 yr`, var_list$`williams_FC_ 15 yr`, surv_list$williams_FC_4yr_surv, surv_list$williams_FC_8yr_surv, surv_list$williams_FC_15yr_surv,
+    NA, "Semi-Markov: FPM", var_list$`semiMarkov_fpm_FC_ 4 yr`, var_list$`semiMarkov_fpm_FC_ 8 yr`, var_list$`semiMarkov_fpm_FC_ 15 yr`, surv_list$semiMarkov_fpm_FC_4yr_surv, surv_list$semiMarkov_fpm_FC_8yr_surv, surv_list$semiMarkov_fpm_FC_15yr_surv,
+    NA, "Microsimulation: SPM, ASF", var_list$`microsim_williams_ac_FC 4 yr`, var_list$`microsim_williams_ac_FC 8 yr`, var_list$`microsim_williams_ac_FC 15 yr`, surv_list$microsim_williams_ac_FC_4yr_surv, surv_list$microsim_williams_ac_FC_8yr_surv, surv_list$microsim_williams_ac_FC_15yr_surv,
+    NA, "Microsimulation: FPM, ASF", var_list$`microsim_fpm_ac_FC 4 yr`, var_list$`microsim_fpm_ac_FC 8 yr`, var_list$`microsim_fpm_ac_FC 15 yr`, surv_list$microsim_fpm_ac_FC_4yr_surv, surv_list$microsim_fpm_ac_FC_8yr_surv, surv_list$microsim_fpm_ac_FC_15yr_surv,
+    NA, "Microsimulation: FPM, RSF", var_list$`microsim_fpm_rel_FC 4 yr`, var_list$`microsim_fpm_rel_FC 8 yr`, var_list$`microsim_fpm_rel_FC 15 yr`, surv_list$microsim_fpm_rel_FC_4yr_surv, surv_list$microsim_fpm_rel_FC_8yr_surv, surv_list$microsim_fpm_rel_FC_15yr_surv,
     "RFC", "Observed", var_list$fischer_RFC_4yr, var_list$fischer_RFC_8yr, NA, surv_list$fischer_RFC_4yr_surv, surv_list$fischer_RFC_8yr_surv, NA, 
-    NA, "Semi-Markov", var_list$`williams_RFC_ 4 yr`, var_list$`williams_RFC_ 8 yr`, var_list$`williams_RFC_ 15 yr`, surv_list$williams_RFC_4yr_surv, surv_list$williams_RFC_8yr_surv, surv_list$williams_RFC_15yr_surv,
-    NA, "Microsimulation", var_list$`microsim_RFC_ 4 yr`, var_list$`microsim_RFC_ 8 yr`, var_list$`microsim_RFC_ 15 yr`, surv_list$microsim_RFC_4yr_surv, surv_list$microsim_RFC_8yr_surv, surv_list$microsim_RFC_15yr_surv),
-    nrow = 6, byrow = TRUE)
+    NA, "Semi-Markov: SPM (Williams 2017)", var_list$`williams_RFC_ 4 yr`, var_list$`williams_RFC_ 8 yr`, var_list$`williams_RFC_ 15 yr`, surv_list$williams_RFC_4yr_surv, surv_list$williams_RFC_8yr_surv, surv_list$williams_RFC_15yr_surv,
+    NA, "Semi-Markov: FPM", var_list$`semiMarkov_fpm_RFC_ 4 yr`, var_list$`semiMarkov_fpm_RFC_ 8 yr`, var_list$`semiMarkov_fpm_RFC_ 15 yr`, surv_list$semiMarkov_fpm_RFC_4yr_surv, surv_list$semiMarkov_fpm_RFC_8yr_surv, surv_list$semiMarkov_fpm_RFC_15yr_surv,
+    NA, "Microsimulation: SPM, ASF", var_list$`microsim_williams_ac_RFC 4 yr`, var_list$`microsim_williams_ac_RFC 8 yr`, var_list$`microsim_williams_ac_RFC 15 yr`, surv_list$microsim_williams_ac_RFC_4yr_surv, surv_list$microsim_williams_ac_RFC_8yr_surv, surv_list$microsim_williams_ac_RFC_15yr_surv,
+    NA, "Microsimulation: FPM, ASF", var_list$`microsim_fpm_ac_RFC 4 yr`, var_list$`microsim_fpm_ac_RFC 8 yr`, var_list$`microsim_fpm_ac_RFC 15 yr`, surv_list$microsim_fpm_ac_RFC_4yr_surv, surv_list$microsim_fpm_ac_RFC_8yr_surv, surv_list$microsim_fpm_ac_RFC_15yr_surv,
+    NA, "Microsimulation: FPM, RSF", var_list$`microsim_fpm_rel_RFC 4 yr`, var_list$`microsim_fpm_rel_RFC 8 yr`, var_list$`microsim_fpm_rel_RFC 15 yr`, surv_list$microsim_fpm_rel_RFC_4yr_surv, surv_list$microsim_fpm_rel_RFC_8yr_surv, surv_list$microsim_fpm_rel_RFC_15yr_surv
+ ),
+    nrow = 12, byrow = TRUE)
 
 
 ## Make data frame
@@ -233,7 +431,7 @@ ft <- add_header_row(ft, values = c("","RMST at times (years)", "Survival propor
 ft <- align(ft, align = c("right"), i = 1, j = NULL, part = "header")
 ft <- align(ft, align = c("center"), i = 2, j = NULL, part = "header")
 
-ft <- add_footer_lines(ft,"RMST, restricted mean survival time; FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide.")
+ft <- add_footer_lines(ft,"RMST, restricted mean survival time; FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; SPM, standard parametric models; FPM, flexible parametric models; ASF, all-cause survival framework; RSF, relative survival framework.")
 ft
 
 save_as_docx(ft, path="../Output/04b_table_survextrap.docx")

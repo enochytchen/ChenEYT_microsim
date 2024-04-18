@@ -1,3 +1,5 @@
+## Filename: 00_packages
+## Purpose: Install all the required packages to run the codes in this project
 
 install.packages("survHE")
 install.packages("survival")
@@ -13,29 +15,13 @@ install.packages("flextable")
 install.packages("remotes")
 install.packages("mc2d")
 install.packages("mvtnorm")
+install.packages("biostat3")
 
+## Some packages need to be pulled from GitHub
 library(remotes)
 remotes::install_github("mclements/rstpm2", ref="develop")
 remotes::install_github("mclements/microsimulation")
 remotes::install_github("chjackson/flexsurv") # to fix a bug in relative survival modelling
-
-## MC: Enoch, what about separating the installing and reading of the packages?
-
-library(survHE)
-library(survival)
-library(dplyr)
-library(tidyverse)
-library(ggplot2)
-library(ggpubr)
-library(survRM2)
-library(pracma)
-library(Rcpp)
-library(officer)
-library(flextable)
-library(rstpm2)
-library(microsimulation)
-library(mc2d) # for beta pert distribution
-library(mvtnorm) # for bootstrapping parametric models 
 
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.

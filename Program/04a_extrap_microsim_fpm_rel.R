@@ -1,4 +1,4 @@
-## Filename: 04_rel_survextrap
+## Filename: 04a_extrap_microsim_fpm_rel
 ## Purpose: Run microsimulation model for comparing survival extrapolation results
 ##          Relative survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
@@ -8,7 +8,7 @@ set.seed(12345)
 
 ##############################################################
 ##============================================================
-## Install/Read packages
+## Read packages
 ##============================================================
 ##############################################################
 library(tidyverse)
@@ -21,7 +21,7 @@ library(Rcpp)
 ## Run the survival models
 ##============================================================
 ##############################################################
-source("03_rel_survmod.R")
+source("03a_survmod_fpm.R")
 
 ##############################################################
 ##============================================================
@@ -115,8 +115,8 @@ sourceCpp(code="
   void IDM::pfs() {
     state = PFS;
     report -> setUtility(0.8);
-    scheduleAt(m1.randU(R::runif(0.0,1.0),now()),toProg);
-    scheduleAt(m2.randU(R::runif(0.0,1.0),now()),toExcD);
+    scheduleAt(m1.randU(R::runif(0.0,1.0), now()),toProg);
+    scheduleAt(m2.randU(R::runif(0.0,1.0), now()),toExcD);
     scheduleAt(background.rand(std::exp(-R::rexp(1.0)), dxage+now())-dxage, toExpD);
   }
   /**
@@ -209,11 +209,11 @@ results <- lapply(treat_values, function(treat_value) {
                   mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
                   ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
-                  m1 = gsm_design(m1, newdata = ndata),
-                  m2 = gsm_design(m2, newdata = ndata),
-                  m3 = gsm_design(m3, newdata = ndata))
+                  m1 = gsm_design(m1_fpm, newdata = ndata),
+                  m2 = gsm_design(m2_fpm_rel, newdata = ndata),
+                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
     
-    sim <- simulations_reduced(1e6, param = param, indivp = FALSE)
+    sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     return(sim)
   })
 
@@ -222,8 +222,8 @@ results_FC <- results[[1]]
 results_RFC <- results[[2]]
 
 ## Save results
-saveRDS(results_FC, file = "../Data/04a_rel_survextrap_results_FC.rds")
-saveRDS(results_RFC, file = "../Data/04a_rel_survextrap_results_RFC.rds")
+saveRDS(results_FC, file = "../Data/04a_extrap_microsim_fpm_rel_FC.rds")
+saveRDS(results_RFC, file = "../Data/04a_extrap_microsim_fpm_rel_RFC.rds")
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

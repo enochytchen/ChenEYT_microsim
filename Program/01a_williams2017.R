@@ -55,9 +55,6 @@ ggplot(basecase, aes(x = time, y = surv, color=as.factor(treat))) +
 ##############################################################
 write.table(basecase, file = "01a_williams2017.txt", sep = " ",
             row.names = FALSE, col.names = TRUE,  quote = FALSE)
-
-################################################################
-setwd("../Program/")  # Reset to the original working directory
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

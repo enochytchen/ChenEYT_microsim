@@ -145,8 +145,6 @@ plot(mfit,
 write.table(fischer2016, file = "01a_fischer2016.txt", sep = " ",
             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ################################################################
-setwd("../Program/")
-################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 
 # multiple timescales for health technology assessment

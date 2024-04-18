@@ -1,8 +1,7 @@
 ## Filename: 00_master
 ## Purpose: List the order of the syntaxes
 
-#' Set the wd as where this R file is
-original_wd <- getwd()  # Store the original working directory
+## Set the wd as where this R file is
 if (require("rstudioapi") && isAvailable()) {
   wd <- dirname(rstudioapi::getActiveDocumentContext()$path)
 } else wd <- "~/src/R/ChenEYT_microsim/Program/"
@@ -30,17 +29,15 @@ source("02_msmcancer.R")      # Claim 4 years of survival data into a multistate
 ## Relative survival framework
 ##============================================================
 ##############################################################
-source("03_rel_survmod.R")      # Fit survival models
-source("04a_rel_survextrap.R")   # Evaluate survival extrapolation
-source("04b_table_survextrap.R")  # Tabulate the observed and the extrapolated survival
-source("04c_figure_survextrap.R") # Plot the observed and the extrapolated survival
-source("05_rel_microsim.R")     # Microsimulation model for cost-effectiveness analysis
-source("06_rel_onewaysen.R")    # One-way sensitivity analysis
-source("07_rel_PSA.R")          # Probabilistic sensitivity analysis 
-source("08_rel_CEplane_CEAC.R") # Plot cost-effectiveness plane and cost-effectiveness acceptability curve
+source("03_rel_survmod.R")         # Fit survival models
+source("04a_rel_survextrap.R")     # Evaluate survival extrapolation
+source("04b_table_survextrap.R")   # Tabulate the observed and the extrapolated survival
+source("04c_figure_survextrap.R")  # Plot the observed and the extrapolated survival
+source("05_rel_microsim.R")        # Microsimulation model for cost-effectiveness analysis
+source("06_rel_onewaysen.R")       # One-way sensitivity analysis
+source("07_rel_PSA.R")             # Probabilistic sensitivity analysis 
+source("08_rel_CEplane_CEAC.R")    # Plot cost-effectiveness plane and cost-effectiveness acceptability curve
 
-################################################################
-setwd(original_wd)  # Reset to the original working directory
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

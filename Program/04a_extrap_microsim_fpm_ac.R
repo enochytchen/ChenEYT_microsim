@@ -99,7 +99,7 @@ sourceCpp(code="
                        id, state, msg->kind, this->previousEventTime, ssim::now());
     report->add(state, msg->kind, this->previousEventTime, ssim::now(), id);
     cancel_events();
-    scheduleAt(15, toEOS); // End of study--Time horizon 15 years
+    scheduleAt(50, toEOS); // End of study--Time horizon 50 years
     switch(msg->kind) {
     case toPFS:
       pfs();
@@ -107,7 +107,7 @@ sourceCpp(code="
     case toProg:
       state = Prog;
       report -> setUtility(0.6);
-      scheduleAt(m3.randU(R::runif(0.0,1.0), now()), toAcD);
+      scheduleAt(m3.randU(R::runif(0.0,1.0)) + now(), toAcD);
       break;
     case toAcD:
       state = AcD;

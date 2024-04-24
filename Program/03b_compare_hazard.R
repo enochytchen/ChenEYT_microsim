@@ -18,6 +18,7 @@ library(ggplot2)
 library(ggpubr)
 library(biostat3)
 library(ggplot2)
+library(ggh4x)
 
 ##############################################################
 ##============================================================
@@ -43,65 +44,86 @@ plotdataFC_haz <- data.frame(time = haz_1FC$est.grid, haz= haz_1FC$haz.est)
 ## Plot using ggplot
 ## RFC
 trans1_RFC <- ggplot() + 
-              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz, color = "Observed"), linetype = "solid", size = 1.5) +
-              geom_line(data=plotdataRFC_m1_fpm, aes(x=Tstop, y=haz_m1_fpm, color = "FPM (ASF)"), linetype = "dashed", size = 1.5) + 
-              geom_line(data=plotdataRFC_m1_w, aes(x=Tstop, y=haz_m1_gom, color = "Gompertz"), linetype = "dashed", size = 1.5) +
-              geom_line(data=plotdataRFC_m1_w, aes(x=0, y=0, color = "G-gamma"), linetype = "dashed", size = 1.5) +   # for legend
-              geom_line(data=plotdataRFC_m1_w, aes(x=0, y=0, color = "FPM (RSF)"), linetype = "dashed", size = 1.5) + # for legend
-              scale_x_continuous(breaks = seq(0, 15, by = 1), limits = c(0, 15),
-                                 labels = seq(0, 15, by = 1)) +
+              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz, color = "lt1", linetype = "lt1"), linewidth = 1.5) +
+              geom_line(data=plotdataRFC_m1_fpm, aes(x=Tstop, y=haz_m1_fpm,  color = "lt2", linetype = "lt2"), linewidth = 1.5) + 
+              geom_line(data=plotdataRFC_m1_w, aes(x=Tstop, y=haz_m1_gom,  color = "lt4", linetype = "lt4"), linewidth = 1.5) +
+              geom_line(data=plotdataRFC_m1_w, aes(x=0, y=0,  color = "lt3", linetype = "lt3"), linewidth = 1.5) +   # for legend
+              geom_line(data=plotdataRFC_m1_w, aes(x=0, y=0,  color = "lt5", linetype = "lt5"), linewidth = 1.5) + # for legend
+              geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
+                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 2, by = 0.5), limits = c(0, 2), 
                                  labels = seq(0, 2, by = 0.5)) +
-              labs(x = "", y = "Hazard",
-                   subtitle = "Progression-free -> progression", 
-                   title = "RFC") +
-              theme_minimal() + 
-              scale_color_manual(values = c("Observed" = "navy", "FPM (ASF)" = "blue", "FPM (RSF)" = "cyan", 
-                                            "Gompertz" = "darkolivegreen3", "G-gamma" = "darkorange"),
-                                 breaks = c("Observed", "FPM (ASF)", "Gompertz", "FPM (RSF)", "G-gamma"),
-                                 name = NULL) +
+              labs(x = "", y = "Hazard", title = "RFC") +
+              scale_color_manual(values = c("lt1" = "navy", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
+                                 labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                 name = "") +
+              scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
+                                    labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                    name = "") +
+              guides(x = "axis_minor", y = "axis_minor",
+                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
+                    legend.key.width = unit(1.5, "cm"),
                     panel.grid = element_blank(),
                     panel.background = element_blank(),
                     axis.line = element_line(color = "black"),
-                    plot.title = element_text(hjust = 0.5, size = 24),
+                    plot.title = element_text(hjust = 0.5, size = 18),
                     plot.subtitle = element_text(hjust = 0.5, size = 18),
                     axis.text = element_text(size = 12),
                     axis.title.x = element_text(size = 18),
                     axis.title.y = element_text(size = 18),
-                    legend.text = element_text(size = 18)) + 
-              guides(color = guide_legend(nrow = 1))
+                    legend.text = element_text(size = 18),
+                    legend.box.spacing = unit(1, "pt")) 
 trans1_RFC
 
 ## FC
 trans1_FC <- ggplot() + 
-              geom_line(data=plotdataFC_haz, aes(x=time, y=haz, color = "Observed"), linetype = "solid", size = 1.5) +
-              geom_line(data=plotdataFC_m1_fpm, aes(x=Tstop, y=haz_m1_fpm, color = "FPM (ASF)"), linetype = "dashed", size = 1.5) + 
-              geom_line(data=plotdataFC_m1_w, aes(x=Tstop, y=haz_m1_gom, color = "Gompertz"), linetype = "dashed", size = 1.5) +
-              scale_x_continuous(breaks = seq(0, 15, by = 1), limits = c(0, 15),
-                                 labels = seq(0, 15, by = 1)) +
+              geom_line(data=plotdataFC_haz, aes(x=time, y=haz, color = "lt1", linetype = "lt1"), linewidth = 1.5) +
+              geom_line(data=plotdataFC_m1_fpm, aes(x=Tstop, y=haz_m1_fpm,  color = "lt2", linetype = "lt2"), linewidth = 1.5) + 
+              geom_line(data=plotdataFC_m1_w, aes(x=Tstop, y=haz_m1_gom,  color = "lt4", linetype = "lt4"), linewidth = 1.5) +
+              geom_line(data=plotdataFC_m1_w, aes(x=0, y=0,  color = "lt3", linetype = "lt3"), linewidth = 1.5) +   # for legend
+              geom_line(data=plotdataFC_m1_w, aes(x=0, y=0,  color = "lt5", linetype = "lt5"), linewidth = 1.5) + # for legend
+              geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
+                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 2, by = 0.5), limits = c(0, 2), 
                                  labels = seq(0, 2, by = 0.5)) +
               labs(x = "", y = "Hazard",
-                   subtitle = "Progression-free -> progression",
                    title = "FC") +
-              theme_minimal() +
-              scale_color_manual(values = c("Observed" = "navy", "FPM (ASF)" = "blue", 
-                                            "Gompertz" = "darkolivegreen3"), 
-                                 name = NULL) +
+              scale_color_manual(values = c("lt1" = "navy", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
+                                 labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                 name = "") +
+              scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
+                                    labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                    name = "") +
+              guides(x = "axis_minor", y = "axis_minor",
+                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
+                    legend.key.width = unit(1.5, "cm"),
                     panel.grid = element_blank(),
                     panel.background = element_blank(),
                     axis.line = element_line(color = "black"),
-                    plot.title = element_text(hjust = 0.5, size = 24),
+                    plot.title = element_text(hjust = 0.5, size = 18),
                     plot.subtitle = element_text(hjust = 0.5, size = 18),
                     axis.text = element_text(size = 12),
                     axis.title.x = element_text(size = 18),
                     axis.title.y = element_text(size = 18),
-                    legend.text = element_text(size = 18))
+                    legend.text = element_text(size = 18)) 
 trans1_FC
+
+plot1 <- ggarrange(trans1_RFC, trans1_FC, ncol = 2, nrow = 1, common.legend = TRUE, legend="none")
+plot1 <- annotate_figure(plot1, top = text_grob("(A) Progression-free -> progression", 
+                                      color = "black", face = "bold", size = 24))
+plot1
 
 ##############################################################
 ##============================================================
@@ -119,59 +141,82 @@ plotdataFC_haz <- data.frame(time = haz_2FC$est.grid, haz= haz_2FC$haz.est)
 ## Plot using ggplot
 ## RFC
 trans2_RFC <- ggplot() + 
-              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz, color = "Observed"), linetype = "solid", size = 1.5) +
-              geom_line(data=plotdataRFC_m2_fpm_ac, aes(x=Tstop, y=haz, color = "FPM (ASF)"), linetype = "dashed", size = 1.5) +
-              geom_line(data=plotdataRFC_m2_fpm_rel, aes(x=Tstop, y=achaz, color = "FPM (RSF)"), linetype = "dashed", size = 1.5) + 
-              geom_line(data=plotdataRFC_m2_w, aes(x=Tstop, y=haz_m2_gam, color = "G-gamma"), linetype = "dashed", size = 1.5) + 
-              scale_x_continuous(breaks = seq(0, 15, by = 1), limits = c(0, 15),
-                                 labels = seq(0, 15, by = 1)) +
+              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz, color = "lt1", linetype = "lt1"), linewidth = 1.5) +
+              geom_line(data=plotdataRFC_m2_fpm_ac, aes(x=Tstop, y=haz, color = "lt2", linetype = "lt2"), linewidth = 1.5) +
+              geom_line(data=plotdataRFC_m2_fpm_rel, aes(x=Tstop, y=achaz, color = "lt3", linetype = "lt3"), linewidth = 1.5) + 
+              geom_line(data=plotdataRFC_m2_w, aes(x=Tstop, y=haz_m2_gam, color = "lt5", linetype = "lt5"), linewidth = 1.5) + 
+              geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
+                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 0.1, by = 0.02), limits = c(0, 0.1), 
-                                 labels = seq(0, 0.1, by = 0.02)) +
-              labs(x = "", y = "Hazard",
-                   subtitle = "Progression-free -> death") +
-              theme_minimal() + 
-              scale_color_manual(values = c("Observed" = "navy", "FPM (ASF)" = "blue", "FPM (RSF)" = "cyan", "G-gamma" = "darkorange"), 
-                                 name = NULL) +
+                     labels = seq(0, 0.1, by = 0.02)) +
+              labs(x = "", y = "Hazard", title = "RFC") +
+              scale_color_manual(values = c("lt1" = "navy", "lt2" = "blue", "lt3" = "cyan", "lt5" = "darkorange"),
+                                 labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
+                                 name = "") +
+              scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt5" = "longdash"), 
+                                    labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
+                                    name = "") +
+              guides(x = "axis_minor", y = "axis_minor",
+                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
+                    legend.key.width = unit(1.5, "cm"),
                     panel.grid = element_blank(),
                     panel.background = element_blank(),
                     axis.line = element_line(color = "black"),
-                    plot.title = element_text(hjust = 0.5, size = 24),
+                    plot.title = element_text(hjust = 0.5, size = 18),
                     plot.subtitle = element_text(hjust = 0.5, size = 18),
                     axis.text = element_text(size = 12),
                     axis.title.x = element_text(size = 18),
                     axis.title.y = element_text(size = 18),
-                    legend.text = element_text(size = 18))
+                    legend.text = element_text(size = 18)) 
 trans2_RFC
 
 ## FC
-trans2_FC <-  ggplot() + 
-              geom_line(data=plotdataFC_haz, aes(x=time, y=haz, color = "Observed"), linetype = "solid", size = 1.5) +
-              geom_line(data=plotdataFC_m2_fpm_ac, aes(x=Tstop, y=haz, color = "FPM (ASF)"), linetype = "dashed", size = 1.5) +
-              geom_line(data=plotdataFC_m2_fpm_rel, aes(x=Tstop, y=achaz, color = "FPM (RSF)"), linetype = "dashed", size = 1.5) + 
-              geom_line(data=plotdataFC_m2_w, aes(x=Tstop, y=haz_m2_gam, color = "G-gamma"), linetype = "dashed", size = 1.5) + 
-              scale_x_continuous(breaks = seq(0, 15, by = 1), limits = c(0, 15),
-                                 labels = seq(0, 15, by = 1)) +
+trans2_FC <- ggplot() + 
+              geom_line(data=plotdataFC_haz, aes(x=time, y=haz, color = "lt1", linetype = "lt1"), linewidth = 1.5) +
+              geom_line(data=plotdataFC_m2_fpm_ac, aes(x=Tstop, y=haz, color = "lt2", linetype = "lt2"), linewidth = 1.5) +
+              geom_line(data=plotdataFC_m2_fpm_rel, aes(x=Tstop, y=achaz, color = "lt3", linetype = "lt3"), linewidth = 1.5) + 
+              geom_line(data=plotdataFC_m2_w, aes(x=Tstop, y=haz_m2_gam, color = "lt5", linetype = "lt5"), linewidth = 1.5) + 
+              geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
+                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 0.1, by = 0.02), limits = c(0, 0.1), 
                                  labels = seq(0, 0.1, by = 0.02)) +
-              labs(x = "", y = "Hazard",
-                   subtitle = "Progression-free -> death") +
-              theme_minimal() + 
-              scale_color_manual(values = c("Observed" = "navy", "FPM (ASF)" = "blue", "FPM (RSF)" = "cyan", "G-gamma" = "darkorange"), 
-                                 name = NULL) +
+              labs(x = "", y = "Hazard", title = "FC") +
+              scale_color_manual(values = c("lt1" = "navy", "lt2" = "blue", "lt3" = "cyan", "lt5" = "darkorange"),
+                                 labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
+                                 name = "") +
+              scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt5" = "longdash"), 
+                                    labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
+                                    name = "") +
+              guides(x = "axis_minor", y = "axis_minor",
+                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
+                    legend.key.width = unit(1.5, "cm"),
                     panel.grid = element_blank(),
                     panel.background = element_blank(),
                     axis.line = element_line(color = "black"),
-                    plot.title = element_text(hjust = 0.5, size = 24),
+                    plot.title = element_text(hjust = 0.5, size = 18),
                     plot.subtitle = element_text(hjust = 0.5, size = 18),
                     axis.text = element_text(size = 12),
                     axis.title.x = element_text(size = 18),
                     axis.title.y = element_text(size = 18),
-                    legend.text = element_text(size = 18))
+                    legend.text = element_text(size = 18)) 
 trans2_FC
+
+plot2 <- ggarrange(trans2_RFC, trans2_FC, ncol = 2, nrow = 1, legend="none")
+plot2 <- annotate_figure(plot2, top = text_grob("(B) Progression-free -> death", 
+                                                color = "black", face = "bold", size = 24))
+plot2
 
 ##############################################################
 ##============================================================
@@ -186,28 +231,40 @@ haz_3FC <- muhaz2(Surv(time, status) ~ 1, data = msmcancer3FC)
 plotdataRFC_haz <- data.frame(time = haz_3RFC$est.grid, haz= haz_3RFC$haz.est)
 plotdataFC_haz <- data.frame(time = haz_3FC$est.grid, haz= haz_3FC$haz.est)
 
+## Set the legend order
+breaks = names(colors)[c(4,2,1,3)]
 ## Plot using ggplot
 ## RFC
 trans3_RFC <- ggplot() + 
-              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz, color = "Observed"), linetype = "solid", size = 1.5) +
-              geom_line(data=plotdataRFC_m3_fpm_ac, aes(x=time, y=haz, color = "FPM (ASF)"), linetype = "dashed", size = 1.5) +
-              geom_line(data=plotdataRFC_m3_fpm_rel, aes(x=time, y=achaz, color = "FPM (RSF)"), linetype = "dashed", size = 1.5) + 
-              geom_line(data=plotdataRFC_m3_w, aes(x=time, y=haz_m3_gom, color = "Gompertz"), linetype = "dashed", size = 1.5) + 
-              scale_x_continuous(breaks = seq(0, 15, by = 1), limits = c(0, 15),
-                                 labels = seq(0, 15, by = 1)) +
-              scale_y_continuous(breaks = seq(0, 1, by = 0.2), limits = c(0, 1), 
-                                 labels = seq(0, 1, by = 0.2)) +
-              labs(x = "Time (years)", y = "Hazard",
-                   subtitle = "Progression -> death") +
-              theme_minimal() + 
-              scale_color_manual(values = c("Observed" = "navy", "FPM (ASF)" = "blue", "FPM (RSF)" = "cyan", "Gompertz" = "darkolivegreen3"), 
-                                 name = NULL) +
+              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz, color = "lt1", linetype = "lt1"), linewidth = 1.5) +
+              geom_line(data=plotdataRFC_m3_fpm_ac, aes(x=time, y=haz, color = "lt2", linetype = "lt2"), linewidth = 1.5) +
+              geom_line(data=plotdataRFC_m3_fpm_rel, aes(x=time, y=achaz, color = "lt3", linetype = "lt3"), linewidth = 1.5) + 
+              geom_line(data=plotdataRFC_m3_w, aes(x=time, y=haz_m3_gom, color = "lt4", linetype = "lt4"), linewidth = 1.5) +
+              geom_line(data=plotdataRFC_m3_w, aes(x=0, y=0,  color = "lt5", linetype = "lt5"), linewidth = 1.5) + # for legend
+              geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
+                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
+              scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
+                                 labels = seq(0, 0.5, by = 0.1)) +
+              labs(x = "Time (years)", y = "Hazard", title = "RFC") +
+              scale_color_manual(values = c("lt1" = "navy", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange")[c(1,4,2,5,3)],
+                                 labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                 name = "") +
+              scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
+                                    labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                    name = "") +
+              guides(x = "axis_minor", y = "axis_minor",
+                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
+                    legend.key.width = unit(1.5, "cm"),
                     panel.grid = element_blank(),
                     panel.background = element_blank(),
                     axis.line = element_line(color = "black"),
-                    plot.title = element_text(hjust = 0.5, size = 24),
+                    plot.title = element_text(hjust = 0.5, size = 18),
                     plot.subtitle = element_text(hjust = 0.5, size = 18),
                     axis.text = element_text(size = 12),
                     axis.title.x = element_text(size = 18),
@@ -216,26 +273,36 @@ trans3_RFC <- ggplot() +
 trans3_RFC
 
 ## FC
-trans3_FC <-  ggplot() + 
-              geom_line(data=plotdataFC_haz, aes(x=time, y=haz, color = "Observed"), linetype = "solid", size = 1.5) +
-              geom_line(data=plotdataFC_m3_fpm_ac, aes(x=time, y=haz, color = "FPM (ASF)"), linetype = "dashed", size = 1.5) +
-              geom_line(data=plotdataFC_m3_fpm_rel, aes(x=time, y=achaz, color = "FPM (RSF)"), linetype = "dashed", size = 1.5) + 
-              geom_line(data=plotdataFC_m3_w, aes(x=time, y=haz_m3_gom, color = "Gompertz"), linetype = "dashed", size = 1.5) + 
-              scale_x_continuous(breaks = seq(0, 15, by = 1), limits = c(0, 15),
-                                 labels = seq(0, 15, by = 1)) +
-              scale_y_continuous(breaks = seq(0, 1, by = 0.2), limits = c(0, 1), 
-                                 labels = seq(0, 1, by = 0.2)) +
-              labs(x = "Time (years)", y = "Hazard",
-                   subtitle = "Progression -> death") +
-              theme_minimal() + 
-              scale_color_manual(values = c("Observed" = "navy", "FPM (ASF)" = "blue", "FPM (RSF)" = "cyan", "Gompertz" = "darkolivegreen3"), 
-                                 name = NULL) +
+trans3_FC <- ggplot() + 
+              geom_line(data=plotdataFC_haz, aes(x=time, y=haz, color = "lt1", linetype = "lt1"), linewidth = 1.5) +
+              geom_line(data=plotdataFC_m3_fpm_ac, aes(x=time, y=haz, color = "lt2", linetype = "lt2"), linewidth = 1.5) +
+              geom_line(data=plotdataFC_m3_fpm_rel, aes(x=time, y=achaz, color = "lt3", linetype = "lt3"), linewidth = 1.5) + 
+              geom_line(data=plotdataFC_m3_w, aes(x=time, y=haz_m3_gom, color = "lt4", linetype = "lt4"), linewidth = 1.5) + 
+              geom_line(data=plotdataFC_m3_w, aes(x=0, y=0,  color = "lt5", linetype = "lt5"), linewidth = 1.5) + # for legend
+              geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+              geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
+                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
+              scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
+                                 labels = seq(0, 0.5, by = 0.1)) +
+              labs(x = "Time (years)", y = "Hazard", title = "FC") +
+              scale_color_manual(values = c("lt1" = "navy", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
+                                 labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                 name = "") +
+              scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
+                                    labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
+                                    name = "") +
+              guides(x = "axis_minor", y = "axis_minor",
+                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
+                    legend.key.width = unit(1.5, "cm"),
                     panel.grid = element_blank(),
                     panel.background = element_blank(),
                     axis.line = element_line(color = "black"),
-                    plot.title = element_text(hjust = 0.5, size = 24),
+                    plot.title = element_text(hjust = 0.5, size = 18),
                     plot.subtitle = element_text(hjust = 0.5, size = 18),
                     axis.text = element_text(size = 12),
                     axis.title.x = element_text(size = 18),
@@ -243,15 +310,20 @@ trans3_FC <-  ggplot() +
                     legend.text = element_text(size = 18))
 trans3_FC
 
+plot3 <- ggarrange(trans3_RFC, trans3_FC, ncol = 2, nrow = 1, common.legend=TRUE, legend="bottom")
+plot3 <- annotate_figure(plot3, top = text_grob("(C) Progression -> death", 
+                                                color = "black", face = "bold", size = 24))
+plot3
+
 ################################################################
 ## Combine all plots together
 ################################################################
-plot <- ggarrange(trans1_RFC, trans1_FC, trans2_RFC, trans2_FC, trans3_RFC, trans3_FC, 
-                  ncol = 2, nrow = 3, 
+plot <- ggarrange(plot1, plot2, plot3, 
+                  ncol = 1, nrow = 3, 
                   common.legend = TRUE, legend="bottom")
 plot
 
-ggsave(filename = "../Output/03b_compare_hazard.pdf", plot, width = 10, height = 16, dpi = 1000)
+ggsave(filename = "../Output/03b_compare_hazard.pdf", plot, width = 12, height = 16, dpi = 1000)
 
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.

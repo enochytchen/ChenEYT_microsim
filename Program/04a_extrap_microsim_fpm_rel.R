@@ -142,7 +142,7 @@ sourceCpp(code="
     case toProg:
       state = Prog;
       report -> setUtility(0.6);
-      scheduleAt(m3.randU(R::runif(0.0,1.0), now()), toExcD);
+      scheduleAt(m3.randU(R::runif(0.0,1.0)) + now(), toExcD);
       scheduleAt(background.rand(std::exp(-R::rexp(1.0)), dxage+now())-dxage, toExpD);
       break;
     case toExcD:

@@ -30,8 +30,8 @@ source("02_msmcancer.R")
 ## Make datasets for plotting later
 ##============================================================
 ##############################################################
-plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 15, length.out = 180))
-plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 15, length.out = 180))
+plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 30, length.out = 180))
+plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 30, length.out = 180))
 
 ## Generate a variable for merging with popmort file later
 plotdataRFC_empty$t_floor <- floor(plotdataRFC_empty$Tstop)
@@ -74,7 +74,8 @@ AIC(m1_fpm)
 summary(m1_fpm)
 
 ## The model above is equivalent to this one using flexsurv::flexsurvspline below
-m1_flexfpm_ac <- flexsurvspline(Surv(Tstart, Tstop, status == 1) ~ treat, data=msmcancer1, scale="hazard", k=1)
+m1_flexfpm_ac <- flexsurvspline(Surv(Tstart, Tstop, status == 1) ~ treat, 
+                                data=msmcancer1, scale="hazard", k=1)
 m1_flexfpm_ac
 
 ## Predict hazards
@@ -83,7 +84,7 @@ plotdataFC_m1_fpm$haz_m1_fpm <- predict(m1_fpm, plotdataFC_m1_fpm, type = "haz")
 
 ## Plot the hazards
 plot(plotdataRFC_m1_fpm$Tstop, plotdataRFC_m1_fpm$haz, col = "blue", type = "l", lty="solid",
-     xlim=c(0,15), ylim=c(0,1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,30), ylim=c(0,1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m1_fpm$Tstop, plotdataFC_m1_fpm$haz, col = "red", type = "l", lty="solid")
 legend(0.2, 1, c("FPM (RFC)", "FPM (FC)"), bty="n", 
        lty=c("solid", "solid"), 
@@ -170,6 +171,11 @@ m2_fpm_rel <- models[[1]][[1]]
 AIC(m2_fpm_rel)
 summary(m2_fpm_rel)
 
+## The model above is equivalent to this one using flexsurv::flexsurvspline below
+m2_flexfpm_rel <- flexsurvspline(Surv(Tstart, Tstop, status == 1) ~ treat, 
+                                bhazard = rate, data=msmcancer2, scale="hazard", k=1)
+m2_flexfpm_rel
+
 ## Predict excess hazards
 plotdataRFC_m2_fpm_rel$exhaz <- predict(m2_fpm_rel, plotdataRFC_m2_fpm_rel, type = "haz")
 plotdataFC_m2_fpm_rel$exhaz <- predict(m2_fpm_rel, plotdataFC_m2_fpm_rel, type = "haz")
@@ -198,7 +204,7 @@ plotdataFC_m2_fpm_rel <- plotdataFC_m2_fpm_rel %>%
 ## Plot all the all-cause hazards predicted in either an all-cause survival framework or
 ## a relative survival framework 
 plot(plotdataRFC_m2_fpm_ac$Tstop, plotdataRFC_m2_fpm_ac$haz, col = "blue", type = "l", lty="solid",
-     xlim=c(0,15), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,30), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m2_fpm_ac$Tstop, plotdataFC_m2_fpm_ac$haz, col = "red", type = "l", lty="solid")
 lines(plotdataRFC_m2_fpm_rel$Tstop, plotdataRFC_m2_fpm_rel$achaz, col = "blue", type = "l", lty="longdash")  
 lines(plotdataFC_m2_fpm_rel$Tstop, plotdataFC_m2_fpm_rel$achaz, col = "red", type = "l", lty="longdash")  
@@ -223,8 +229,8 @@ max(msmcancer3$time)
 ## Make a dataset for plotting later
 ## Caution: the time variable name here is "time"
 ##          prepare Markov-renewal
-plotdataRFC_m3_fpm_ac = expand.grid(treat = 1, time=seq(0, 15, length.out = 180))
-plotdataFC_m3_fpm_ac = expand.grid(treat = 0, time=seq(0, 15, length.out = 180))
+plotdataRFC_m3_fpm_ac = expand.grid(treat = 1, time=seq(0, 30, length.out = 180))
+plotdataFC_m3_fpm_ac = expand.grid(treat = 0, time=seq(0, 30, length.out = 180))
 
 ## Build models
 models <- lapply(c(2, 3, 4), function(df) {
@@ -267,9 +273,9 @@ plotdataFC_m3_fpm_ac <- plotdataFC_m3_fpm_ac[plotdataFC_m3_fpm_ac$time>0,]
 ## Make a dataset for plotting later
 ## Caution: the time variable name here is "time"
 ##          prepare Markov-renewal
-plotdataRFC_m3_fpm_rel = expand.grid(treat = 1, time=seq(0, 15, length.out = 180))
+plotdataRFC_m3_fpm_rel = expand.grid(treat = 1, time=seq(0, 30, length.out = 180))
 plotdataRFC_m3_fpm_rel$t_floor <- floor(plotdataRFC_m3_fpm_rel$time)
-plotdataFC_m3_fpm_rel = expand.grid(treat = 0, time=seq(0, 15, length.out = 180))
+plotdataFC_m3_fpm_rel = expand.grid(treat = 0, time=seq(0, 30, length.out = 180))
 plotdataFC_m3_fpm_rel$t_floor <- floor(plotdataFC_m3_fpm_rel$time)
 
 ## Build models
@@ -296,6 +302,11 @@ m3_fpm_rel <- models[[2]][[1]]
 AIC(m3_fpm_rel)
 summary(m3_fpm_rel)
 
+## The model above is equivalent to this one using flexsurv::flexsurvspline below
+m3_flexfpm_rel <-flexsurvspline(Surv(time, status == 1) ~ treat, bhazard = rate,
+                                data=msmcancer3, scale="hazard", k=2)
+m3_flexfpm_rel
+
 ## Predict excess hazards
 plotdataRFC_m3_fpm_rel$exhaz <- predict(m3_fpm_rel, plotdataRFC_m3_fpm_rel, type = "haz")
 plotdataFC_m3_fpm_rel$exhaz <- predict(m3_fpm_rel, plotdataFC_m3_fpm_rel, type = "haz")
@@ -317,7 +328,7 @@ plotdataFC_m3_fpm_rel <- plotdataFC_m3_fpm_rel[plotdataFC_m3_fpm_rel$time>0,]
 ## Plot all the all-cause hazards predicted in either an all-cause survival framework or
 ## a relative survival framework 
 plot(plotdataRFC_m3_fpm_ac$time, plotdataRFC_m3_fpm_ac$haz, col = "blue", type = "l", lty="solid",
-     xlim=c(0,15), ylim=c(0,1), xlab = "Time since progression (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,30), ylim=c(0,1), xlab = "Time since progression (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m3_fpm_ac$time, plotdataFC_m3_fpm_ac$haz, col = "red", type = "l", lty="solid")
 lines(plotdataRFC_m3_fpm_rel$time, plotdataRFC_m3_fpm_rel$achaz, col = "blue", type = "l", lty="longdash")  
 lines(plotdataFC_m3_fpm_rel$time, plotdataFC_m3_fpm_rel$achaz, col = "red", type = "l", lty="longdash")  

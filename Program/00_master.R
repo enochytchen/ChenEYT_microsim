@@ -9,7 +9,7 @@ setwd(wd)
 
 ##############################################################
 ##============================================================
-## Install/read required packages
+## Install required packages
 ##============================================================
 ##############################################################
 source("00_packages.R") 
@@ -21,22 +21,41 @@ source("00_packages.R")
 ##############################################################
 source("01a_fischer2016.R")   # CLL-8 trial: 8 years of follow-up 
 source("01a_williams2017.R")  # Extrapolation from Williams et al.
-source("01b_popmort.R")       # Population mortality file
+source("01b_popmort.R")       # Population mortality file 
 source("02_msmcancer.R")      # Claim 4 years of survival data into a multistate structure 
+
+##############################################################        
+##============================================================
+## Survival models
+##============================================================
+##############################################################
+source("03a_survmod_fpm.R")      # Fit flexible parametric models using rstpm2/flexsurv packages
+source("03a_survmod_williams.R") # Fit standard parametric models used in Williams et al. 2017
+source("03b_compare_hazard.R")   # Compare the extrapolated hazard functions
 
 ##############################################################
 ##============================================================
-## Relative survival framework
+## Compare survival extrapolations
 ##============================================================
 ##############################################################
-source("03_rel_survmod.R")         # Fit survival models
-source("04a_rel_survextrap.R")     # Evaluate survival extrapolation
-source("04b_table_survextrap.R")   # Tabulate the observed and the extrapolated survival
-source("04c_figure_survextrap.R")  # Plot the observed and the extrapolated survival
-source("05_rel_microsim.R")        # Microsimulation model for cost-effectiveness analysis
-source("06_rel_onewaysen.R")       # One-way sensitivity analysis
-source("07_rel_PSA.R")             # Probabilistic sensitivity analysis 
-source("08_rel_CEplane_CEAC.R")    # Plot cost-effectiveness plane and cost-effectiveness acceptability curve
+source("04a_extrap_microsim_fpm_ac.R")       # Microsimulation model using flexible parametric models within an all-cause survival framework
+source("04a_extrap_microsim_fpm_rel.R")      # Microsimulation model using flexible parametric models within a relative survival framework
+source("04a_extrap_microsim_fpm_rel(hesim)") # Microsimulation model using flexible parametric models within a relative survival framework, using hesim package
+source("04a_extrap_microsim_williams_ac.R")  # Microsimulation model using standard parametric models, used in Williams et al. 2017, within an all-cause survival framework
+source("04a_extrap_semiMarkov_fpm_ac.R")     # Semi-Markov model using flexible parametric models within an all-cause survival framework
+source("04b_table_survextrap.R")             # Tabulate the observed and the extrapolated survival
+source("04c_figure_survextrap.R")            # Plot the observed and the extrapolated survival
+
+##############################################################
+##============================================================
+## Full health economics model using microsimulation
+## flexible parametric models within a relative survival framework
+##============================================================
+##############################################################
+source("05_microsim_fpm_rel.R")        # Microsimulation model for cost-effectiveness analysis
+source("06_onewaysen.R")               # One-way sensitivity analysis
+source("07_PSA.R")                     # Probabilistic sensitivity analysis 
+source("08_CEplane_CEAC.R")            # Plot cost-effectiveness plane and cost-effectiveness acceptability curve
 
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.

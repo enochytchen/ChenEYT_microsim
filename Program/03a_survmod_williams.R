@@ -1,4 +1,4 @@
-## Filename: 03a_williams_survmod
+## Filename: 03a_survmod_williams
 ## Purpose: Refit Williams et al.'s models for hazard comparisons
 ## Reference: Williams C, Lewsey JD, Briggs AH, Mackay DF. 
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. 
@@ -27,8 +27,8 @@ source("02_msmcancer.R")
 ## Make datasets for plotting later
 ##============================================================
 ##############################################################
-plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 15, length.out = 180))
-plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 15, length.out = 180))
+plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 30, length.out = 360))
+plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 30, length.out = 360))
 
 ##############################################################
 ##============================================================
@@ -44,6 +44,9 @@ m1_gom <- flexsurvreg(Surv(Tstart, Tstop, status) ~ treat,
                       dist="gompertz",
                       data=msmcancer1)
 
+## Use the plot.flexsurvreg function to see the shape
+plot(m1_gom, type="hazard")
+
 ## Predict hazards
 ## RFC
 haz_m1_gom <- predict(m1_gom, newdata = plotdataRFC_m1_w, type = "haz", times = plotdataRFC_m1_w$Tstop)[[1]][[1]]$".pred_hazard"
@@ -55,9 +58,9 @@ plotdataFC_m1_w <- cbind(plotdataFC_m1_w, haz_m1_gom)
 
 ## Plot the hazards
 plot(plotdataRFC_m1_w$Tstop, plotdataRFC_m1_w$haz_m1_gom, col = "blue", type = "l", lty="solid",
-     xlim=c(0,15), ylim=c(0,150), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,30), ylim=c(0,15), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m1_w$Tstop, plotdataFC_m1_w$haz_m1_gom, col = "red", type = "l", lty="solid")
-legend(0.2, 150, c("Gompertz (RFC)", "Gompertz (FC)"), bty="n", 
+legend(0.2, 300, c("Gompertz (RFC)", "Gompertz (FC)"), bty="n", 
        lty=c("solid", "solid"), 
        col = c("blue", "red"), cex=1)
 title(main="Progression-free -> progression", cex.main=1)
@@ -81,6 +84,9 @@ m2_gam <- flexsurvreg(Surv(Tstart, Tstop, status) ~ treat,
                       dist="gengamma",
                       data=msmcancer2)
 
+## Use the plot.flexsurvreg function to see the shape
+plot(m2_gam, type="hazard")
+
 ## Predict hazards
 ## RFC
 haz_m2_gam <- predict(m2_gam, newdata = plotdataRFC_m2_w, type = "haz", times = plotdataRFC_m2_w$Tstop)[[1]][[1]]$".pred_hazard"
@@ -92,7 +98,7 @@ plotdataFC_m2_w <- cbind(plotdataFC_m2_w, haz_m2_gam)
 
 ## Plot the hazards
 plot(plotdataRFC_m2_w$Tstop, plotdataRFC_m2_w$haz_m2_gam, col = "blue", type = "l", lty="solid",
-     xlim=c(0,15), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,30), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m2_w$Tstop, plotdataFC_m2_w$haz_m2_gam, col = "red", type = "l", lty="solid")
 legend(0.1, 0.1, c("Ggamma (RFC)", "Ggamma (FC)"), bty="n", 
        lty=c("solid", "solid"), 
@@ -107,8 +113,8 @@ title(main="Progression-free -> death", cex.main=1)
 ## Make a dataset for plotting later
 ## Caution: the time variable name here is "time"
 ##          prepare Markov-renewal
-plotdataRFC_empty = expand.grid(treat = 1, time=seq(0, 15, length.out = 180))
-plotdataFC_empty = expand.grid(treat = 0, time=seq(0, 15, length.out = 180))
+plotdataRFC_empty = expand.grid(treat = 1, time=seq(0, 30, length.out = 360))
+plotdataFC_empty = expand.grid(treat = 0, time=seq(0, 30, length.out = 360))
 
 ## Make empty datasets for predictions later
 plotdataRFC_m3_w <- plotdataRFC_empty
@@ -118,6 +124,9 @@ plotdataFC_m3_w <- plotdataFC_empty
 m3_gom <- flexsurvreg(Surv(time, status)~ treat,
                          dist="gompertz",
                          data=msmcancer3)
+
+## Use the plot.flexsurvreg function to see the shape
+plot(m3_gom, type="hazard")
 
 ## Predict hazards
 ## RFC
@@ -130,7 +139,7 @@ plotdataFC_m3_w <- cbind(plotdataFC_m3_w, haz_m3_gom)
 
 ## Plot the hazards
 plot(plotdataRFC_m3_w$time, plotdataRFC_m3_w$haz_m3_gom, col = "blue", type = "l", lty="solid",
-     xlim=c(0,15), ylim=c(0.0,0.3), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,30), ylim=c(0.0,0.3), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m3_w$time, plotdataFC_m3_w$haz_m3_gom, col = "red", type = "l", lty="solid")
 legend(5, 0.05, c("Gompertz (RFC)", "Gompertz (FC)"), bty="n", 
        lty=c("solid", "solid"), 

@@ -1,6 +1,7 @@
-## Filename: 04a_extrap_semiMarkov_fpm
-## Purpose: Run the semi-Markov model using flexible parametric models (flexsurvreg)
-## Notes: Must have installed the lastest Rtools and R4.2.2+
+## Filename: 04a1_Markov_fpm_ac_mstate
+## Purpose: Run Markov (clock-forward) model using mstate package with
+##          flexible parametric models within an all-cause survival framework
+## Notes: 
 
 ##############################################################
 ##============================================================
@@ -8,8 +9,6 @@
 ##============================================================
 ##############################################################
 library(mstate)
-library(flexsurv)
-library(tidyverse)
 
 ##############################################################
 ##============================================================
@@ -17,7 +16,7 @@ library(tidyverse)
 ##============================================================
 ##############################################################
 ## This file also reads in popmort file from 01b_popmort.R
-source("03a_survmod_williams.R")
+source("03a_survmod_fpm.R")
 
 ##############################################################
 ##============================================================
@@ -28,19 +27,17 @@ source("03a_survmod_williams.R")
 tmat <- rbind("PFS"=c(NA, 1, 2), "Prog"=c(NA, NA, 3), "Death"=c(NA, NA, NA))
 
 ## Put all the fitted models into one object
-crfs <- fmsm(m1_gom, m2_gam, m3_gom, trans = tmat)
+crfs <- fmsm(m1_flexfpm_ac, m2_flexfpm_ac, m3_Markov_flexfpm_ac, trans = tmat)
 
 ## Define a multistate model
-t = c(seq(0,4,1/12), seq(4+1/144, 15, 1/144), seq(15+1/144, 22, 1/576))
-
-ms_RFC <- msfit.flexsurvreg(crfs, t = t, trans = tmat, newdata=data.frame(treat=1))
-ms_FC  <- msfit.flexsurvreg(crfs, t = t, trans = tmat, newdata=data.frame(treat=0))
+ms_RFC<- msfit.flexsurvreg(crfs, t = seq(0, 50, by = 0.1), trans = tmat, newdata=data.frame(treat=1))
+ms_FC<- msfit.flexsurvreg(crfs, t = seq(0, 50, by = 0.1), trans = tmat, newdata=data.frame(treat=0))
 
 ## Estimate probability at times
-gom1gam2gom3sim_RFC<- mssample(ms_RFC$Haz, trans = tmat, clock = "reset", M = 5000,
-                               tvec =  t)
-gom1gam2gom3sim_FC<- mssample(ms_RFC$Haz, trans = tmat, clock = "reset", M = 5000,
-                              tvec =  t)
+fpm1fpm2fpm3sim_RFC<- mssample(ms_RFC$Haz, trans = tmat, clock = "forward", M = 1e5,
+                               tvec =  seq(0, 50, by = 0.1))
+fpm1fpm2fpm3sim_FC<- mssample(ms_FC$Haz, trans = tmat, clock = "forward", M = 1e5,
+                              tvec =  seq(0, 50, by = 0.1))
 
 ##############################################################
 ##============================================================
@@ -49,21 +46,21 @@ gom1gam2gom3sim_FC<- mssample(ms_RFC$Haz, trans = tmat, clock = "reset", M = 500
 ##############################################################
 ## Create a variable for undiscounted survival
 ## that is, probability of being at PFS (pstate1) + Progression (pstate2)
-gom1gam2gom3sim_RFC$surv <- gom1gam2gom3sim_RFC$pstate1 + gom1gam2gom3sim_RFC$pstate2
-gom1gam2gom3sim_FC$surv <- gom1gam2gom3sim_FC$pstate1 + gom1gam2gom3sim_FC$pstate2
+fpm1fpm2fpm3sim_RFC$surv <- fpm1fpm2fpm3sim_RFC$pstate1 + fpm1fpm2fpm3sim_RFC$pstate2
+fpm1fpm2fpm3sim_FC$surv <- fpm1fpm2fpm3sim_FC$pstate1 + fpm1fpm2fpm3sim_FC$pstate2
 
 ## Create a variable to indicate treatments
-gom1gam2gom3sim_RFC$treat <- 1
-gom1gam2gom3sim_FC$treat <- 0
+fpm1fpm2fpm3sim_RFC$treat <- 1
+fpm1fpm2fpm3sim_FC$treat <- 0
 
 ## Combine data for saving 
-semiMarkov_williams <- bind_rows(gom1gam2gom3sim_RFC, gom1gam2gom3sim_FC)
+Markov_fpm <- bind_rows(fpm1fpm2fpm3sim_RFC, fpm1fpm2fpm3sim_FC)
 
 ## Plot survival curve to check
-ggplot(semiMarkov_williams, aes(x = time, y = surv, color=as.factor(treat))) +
+ggplot(Markov_fpm, aes(x = time, y = surv, color=as.factor(treat))) +
   geom_line()
 
-write.table(semiMarkov_williams, file = "../Data/04a_extrap_semiMarkov_williams_ac.txt", sep = " ",
+write.table(Markov_fpm, file = "../Data/04a1_Markov_fpm_ac_mstate.txt", sep = " ",
             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ##############################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.

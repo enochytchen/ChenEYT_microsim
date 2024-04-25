@@ -227,10 +227,13 @@ max(msmcancer3$time)
 ##=======All-cause survival framework=======##
 ##############################################
 ## Make a dataset for plotting later
-## Caution: the time variable name here is "time"
-##          prepare Markov-renewal
+## Caution: semi-Markov--time variable is "time"
+##          Markov--time variable is "Tstop"
 plotdataRFC_m3_fpm_ac = expand.grid(treat = 1, time=seq(0, 30, length.out = 180))
+plotdataRFC_m3_fpm_ac$Tstop <- plotdataRFC_m3_fpm_ac$time
+
 plotdataFC_m3_fpm_ac = expand.grid(treat = 0, time=seq(0, 30, length.out = 180))
+plotdataFC_m3_fpm_ac$Tstop <- plotdataFC_m3_fpm_ac$time
 
 ## Build models
 models <- lapply(c(2, 3, 4), function(df) {
@@ -252,30 +255,48 @@ aic_values <- unlist(lapply(models, function(model) {
 print(aic_values)
 
 ## Select model for transition 1 based on the lowest AIC
-m3_fpm_ac <- models[[2]][[1]]
-AIC(m3_fpm_ac)
-summary(m3_fpm_ac)
+## Semi-Markov
+m3_semiMarkov_fpm_ac <- models[[2]][[1]]
+AIC(m3_semiMarkov_fpm_ac)
+summary(m3_semiMarkov_fpm_ac)
+
+## Markov
+m3_Markov_fpm_ac  <- stpm2(Surv(Tstart, Tstop, status == 1) ~ treat, 
+                           data = msmcancer3, df = 3)
+summary(m3_Markov_fpm_ac)
 
 ## The model above is equivalent to this one using flexsurv::flexsurvspline below
-m3_flexfpm_ac <-flexsurvspline(Surv(time, status == 1) ~ treat, data=msmcancer3, scale="hazard", k=2)
-m3_flexfpm_ac
+## Semi-Markov
+m3_semiMarkov_flexfpm_ac <-flexsurvspline(Surv(time, status == 1) ~ treat, 
+                                          data=msmcancer3, scale="hazard", k=2)
+m3_semiMarkov_flexfpm_ac
+
+## Markov
+m3_Markov_flexfpm_ac <-flexsurvspline(Surv(Tstart, Tstop, status == 1) ~ treat, 
+                                      data=msmcancer3, scale="hazard", k=2)
+m3_Markov_flexfpm_ac
 
 ## Predict hazards
-plotdataRFC_m3_fpm_ac$haz <- predict(m3_fpm_ac, plotdataRFC_m3_fpm_ac, type = "haz")
+plotdataRFC_m3_fpm_ac$haz_semiMarkov <- predict(m3_semiMarkov_fpm_ac, plotdataRFC_m3_fpm_ac, type = "haz")
+plotdataRFC_m3_fpm_ac$haz_Markov <- predict(m3_Markov_fpm_ac, plotdataRFC_m3_fpm_ac, type = "haz")
 plotdataRFC_m3_fpm_ac <- plotdataRFC_m3_fpm_ac[plotdataRFC_m3_fpm_ac$time>0,]
 
-plotdataFC_m3_fpm_ac$haz <- predict(m3_fpm_ac, plotdataFC_m3_fpm_ac, type = "haz")
+plotdataFC_m3_fpm_ac$haz_semiMarkov <- predict(m3_semiMarkov_fpm_ac, plotdataFC_m3_fpm_ac, type = "haz")
+plotdataFC_m3_fpm_ac$haz_Markov <- predict(m3_Markov_fpm_ac, plotdataFC_m3_fpm_ac, type = "haz")
 plotdataFC_m3_fpm_ac <- plotdataFC_m3_fpm_ac[plotdataFC_m3_fpm_ac$time>0,]
 
 ##############################################
 ##=======Relative survival framework========##
 ##############################################
 ## Make a dataset for plotting later
-## Caution: the time variable name here is "time"
-##          prepare Markov-renewal
+## Caution: semi-Markov--time variable is "time"
+##          Markov--time variable is "Tstop"
 plotdataRFC_m3_fpm_rel = expand.grid(treat = 1, time=seq(0, 30, length.out = 180))
+plotdataRFC_m3_fpm_rel$Tstop <- plotdataRFC_m3_fpm_rel$time
 plotdataRFC_m3_fpm_rel$t_floor <- floor(plotdataRFC_m3_fpm_rel$time)
+
 plotdataFC_m3_fpm_rel = expand.grid(treat = 0, time=seq(0, 30, length.out = 180))
+plotdataFC_m3_fpm_rel$Tstop <- plotdataFC_m3_fpm_rel$time
 plotdataFC_m3_fpm_rel$t_floor <- floor(plotdataFC_m3_fpm_rel$time)
 
 ## Build models
@@ -298,18 +319,34 @@ aic_values <- unlist(lapply(models, function(model) {
 print(aic_values)
 
 ## Select model for transition 1 based on the lowest AIC
-m3_fpm_rel <- models[[2]][[1]]
-AIC(m3_fpm_rel)
-summary(m3_fpm_rel)
+## Semi-Markov
+m3_semiMarkov_fpm_rel <- models[[2]][[1]]
+AIC(m3_semiMarkov_fpm_rel)
+summary(m3_semiMarkov_fpm_rel)
+
+## Markov
+m3_Markov_fpm_rel <- stpm2(Surv(Tstart, Tstop, status == 1) ~ treat + bhazard(rate), data = msmcancer3,
+                   df = 3)
+summary(m3_Markov_fpm_rel)
 
 ## The model above is equivalent to this one using flexsurv::flexsurvspline below
-m3_flexfpm_rel <-flexsurvspline(Surv(time, status == 1) ~ treat, bhazard = rate,
-                                data=msmcancer3, scale="hazard", k=2)
-m3_flexfpm_rel
+## Semi-Markov
+m3_semiMarkov_flexfpm_rel <-flexsurvspline(Surv(time, status == 1) ~ treat, bhazard = rate,
+                                           data=msmcancer3, scale="hazard", k=2)
+m3_semiMarkov_flexfpm_rel
+
+## Markov
+## Caution! This does not converge
+# m3_Markov_flexfpm_rel <-flexsurvspline(Surv(Tstart, Tstop, status == 1) ~ treat, bhazard = rate,
+#                                        data=msmcancer3, scale="hazard", k=2)
+# m3_Markov_flexfpm_rel
 
 ## Predict excess hazards
-plotdataRFC_m3_fpm_rel$exhaz <- predict(m3_fpm_rel, plotdataRFC_m3_fpm_rel, type = "haz")
-plotdataFC_m3_fpm_rel$exhaz <- predict(m3_fpm_rel, plotdataFC_m3_fpm_rel, type = "haz")
+plotdataRFC_m3_fpm_rel$exhaz_semiMarkov <- predict(m3_semiMarkov_fpm_rel, plotdataRFC_m3_fpm_rel, type = "haz")
+plotdataRFC_m3_fpm_rel$exhaz_Markov <- predict(m3_Markov_fpm_rel, plotdataRFC_m3_fpm_rel, type = "haz")
+
+plotdataFC_m3_fpm_rel$exhaz_semiMarkov <- predict(m3_semiMarkov_fpm_rel, plotdataFC_m3_fpm_rel, type = "haz")
+plotdataFC_m3_fpm_rel$exhaz_Markov <- predict(m3_Markov_fpm_rel, plotdataFC_m3_fpm_rel, type = "haz")
 
 ## To obtain all-cause hazard, it is required to estimate the expected hazard.
 ## Use the interrelationship (all-cause hazard = excess hazard + expected hazard)
@@ -317,21 +354,23 @@ plotdataFC_m3_fpm_rel$exhaz <- predict(m3_fpm_rel, plotdataFC_m3_fpm_rel, type =
 ## Merge the expected hazard with the original data
 plotdataRFC_m3_fpm_rel <- merge(plotdataRFC_m3_fpm_rel, popmort2, by=c("t_floor"))
 plotdataRFC_m3_fpm_rel <- plotdataRFC_m3_fpm_rel %>%
-                          mutate(achaz = exhaz + rate)
+                          mutate(achaz_semiMarkov = exhaz_semiMarkov + rate,
+                                 achaz_Markov = exhaz_Markov + rate) 
 plotdataRFC_m3_fpm_rel <- plotdataRFC_m3_fpm_rel[plotdataRFC_m3_fpm_rel$time>0,]
 
 plotdataFC_m3_fpm_rel <- merge(plotdataFC_m3_fpm_rel, popmort2, by=c("t_floor"))
 plotdataFC_m3_fpm_rel <- plotdataFC_m3_fpm_rel %>%
-                         mutate(achaz = exhaz + rate)
+                         mutate(achaz_semiMarkov = exhaz_semiMarkov + rate,
+                                achaz_Markov = exhaz_Markov + rate)
 plotdataFC_m3_fpm_rel <- plotdataFC_m3_fpm_rel[plotdataFC_m3_fpm_rel$time>0,]
 
 ## Plot all the all-cause hazards predicted in either an all-cause survival framework or
 ## a relative survival framework 
-plot(plotdataRFC_m3_fpm_ac$time, plotdataRFC_m3_fpm_ac$haz, col = "blue", type = "l", lty="solid",
+plot(plotdataRFC_m3_fpm_ac$time, plotdataRFC_m3_fpm_ac$haz_semiMarkov, col = "blue", type = "l", lty="solid",
      xlim=c(0,30), ylim=c(0,1), xlab = "Time since progression (years)", ylab = "Hazard rate (events/person-year)")
-lines(plotdataFC_m3_fpm_ac$time, plotdataFC_m3_fpm_ac$haz, col = "red", type = "l", lty="solid")
-lines(plotdataRFC_m3_fpm_rel$time, plotdataRFC_m3_fpm_rel$achaz, col = "blue", type = "l", lty="longdash")  
-lines(plotdataFC_m3_fpm_rel$time, plotdataFC_m3_fpm_rel$achaz, col = "red", type = "l", lty="longdash")  
+lines(plotdataFC_m3_fpm_ac$time, plotdataFC_m3_fpm_ac$haz_semiMarkov, col = "red", type = "l", lty="solid")
+lines(plotdataRFC_m3_fpm_rel$time, plotdataRFC_m3_fpm_rel$achaz_semiMarkov, col = "blue", type = "l", lty="longdash")  
+lines(plotdataFC_m3_fpm_rel$time, plotdataFC_m3_fpm_rel$achaz_semiMarkov, col = "red", type = "l", lty="longdash")  
 legend(0.2, 1, c("FPM all-cause (RFC)", "FPM all-cause (FC)", "FPM relative (RFC)", "FPM relative (FC)"), bty="n", 
        lty=c("solid", "solid", "longdash","longdash"), 
        col = c("blue", "red", "blue", "red"), cex=1)

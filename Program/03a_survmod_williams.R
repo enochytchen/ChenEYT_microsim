@@ -111,36 +111,46 @@ title(main="Progression-free -> death", cex.main=1)
 ##==============================================================
 ################################################################
 ## Make a dataset for plotting later
-## Caution: the time variable name here is "time"
-##          prepare Markov-renewal
+## Caution: semi-Markov--time variable is "time"
+##          Markov--time variable is "Tstop"
 plotdataRFC_empty = expand.grid(treat = 1, time=seq(0, 30, length.out = 360))
+plotdataRFC_empty$Tstop <- plotdataRFC_empty$time
 plotdataFC_empty = expand.grid(treat = 0, time=seq(0, 30, length.out = 360))
+plotdataFC_empty$Tstop <- plotdataFC_empty$time
 
 ## Make empty datasets for predictions later
 plotdataRFC_m3_w <- plotdataRFC_empty
 plotdataFC_m3_w <- plotdataFC_empty
 
 ## Fit Gompertz model
-m3_gom <- flexsurvreg(Surv(time, status)~ treat,
-                         dist="gompertz",
-                         data=msmcancer3)
-
+## Semi-Markov
+m3_semiMarkov_gom <- flexsurvreg(Surv(time, status)~ treat,
+                                 dist="gompertz",
+                                 data=msmcancer3)
 ## Use the plot.flexsurvreg function to see the shape
-plot(m3_gom, type="hazard")
+plot(m3_semiMarkov_gom, type="hazard")
+
+## Markov
+m3_Markov_gom <- flexsurvreg(Surv(Tstart, Tstop, status)~ treat,
+                                 dist="gompertz",
+                                 data=msmcancer3)
+
 
 ## Predict hazards
 ## RFC
-haz_m3_gom <- predict(m3_gom, newdata = plotdataRFC_m3_w, type = "haz", times = plotdataRFC_m3_w$time)[[1]][[1]]$".pred_hazard"
-plotdataRFC_m3_w <- cbind(plotdataRFC_m3_w, haz_m3_gom)
+plotdataRFC_m3_w$haz_m3_gom_semiMarkov <- predict(m3_semiMarkov_gom, newdata = plotdataRFC_m3_w, type = "haz", times = plotdataRFC_m3_w$time)[[1]][[1]]$".pred_hazard"
+plotdataRFC_m3_w$haz_m3_gom_Markov <- predict(m3_Markov_gom, newdata = plotdataRFC_m3_w, type = "haz", times = plotdataRFC_m3_w$Tstop)[[1]][[1]]$".pred_hazard"
 
 ## FC
-haz_m3_gom <- predict(m3_gom, newdata = plotdataFC_m3_w, type = "haz", times = plotdataFC_m3_w$time)[[1]][[1]]$".pred_hazard"
-plotdataFC_m3_w <- cbind(plotdataFC_m3_w, haz_m3_gom)
+plotdataFC_m3_w$haz_m3_gom_semiMarkov <- predict(m3_semiMarkov_gom, newdata = plotdataFC_m3_w, type = "haz", times = plotdataFC_m3_w$time)[[1]][[1]]$".pred_hazard"
+plotdataFC_m3_w$haz_m3_gom_Markov <- predict(m3_Markov_gom, newdata = plotdataFC_m3_w, type = "haz", times = plotdataFC_m3_w$Tstop)[[1]][[1]]$".pred_hazard"
+
 
 ## Plot the hazards
-plot(plotdataRFC_m3_w$time, plotdataRFC_m3_w$haz_m3_gom, col = "blue", type = "l", lty="solid",
+## Semi-Markov as an example
+plot(plotdataRFC_m3_w$time, plotdataRFC_m3_w$haz_m3_gom_semiMarkov, col = "blue", type = "l", lty="solid",
      xlim=c(0,30), ylim=c(0.0,0.3), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
-lines(plotdataFC_m3_w$time, plotdataFC_m3_w$haz_m3_gom, col = "red", type = "l", lty="solid")
+lines(plotdataFC_m3_w$time, plotdataFC_m3_w$haz_m3_gom_semiMarkov, col = "red", type = "l", lty="solid")
 legend(5, 0.05, c("Gompertz (RFC)", "Gompertz (FC)"), bty="n", 
        lty=c("solid", "solid"), 
        col = c("blue", "red"), cex=1)

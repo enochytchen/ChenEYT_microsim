@@ -1,6 +1,8 @@
-## Filename: 05_microsim_fpm_rel
-## Purpose: Run the complete microsimulation model
-##          Relative survival framework
+## Filename: 05_fullmod_semiMarkov_fpm_rel_microsim.R
+## Purpose: Run the complete microsimulation model same as "04a6_semiMarkov_fpm_rel_microsim.R"
+##          semi-Markov (clock-reset) model using microsimulation package with
+##          flexible parametric models within a relative survival framework
+##          with costs
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
 
 ## Set seed for coherency
@@ -438,7 +440,7 @@ for (i in c(0, 1)) {
                       ## Survival models
                       m1 = gsm_design(m1_fpm, newdata = ndata),
                       m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                      m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                      m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                       u_PFS = 1,    ## For estimating discounted LY
                       u_Prog = 1)   ## For estimating discounted LY
 
@@ -473,7 +475,7 @@ results <- lapply(treat_values, function(treat_value) {
                     ## Survival models
                     m1 = gsm_design(m1_fpm, newdata = ndata),
                     m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                    m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                    m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                     u_PFS = 0.8,
                     u_Prog = 0.6,
                     ## Cost data
@@ -668,7 +670,7 @@ ft <- autofit(ft)
 ft <- align(ft, align = c("right"), i = NULL, j = 2:4)
 ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; QALY, quality-adjusted life year; PFS, progression-free survival.")
 ft
-save_as_docx(ft, path="../Output/05_microsim_fpm_rel.docx")
+save_as_docx(ft, path="../Output/05_fullmod_semiMarkov_fpm_rel_microsim.docx")
 
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.

@@ -1,6 +1,6 @@
-## Filename: 04a_extrap_microsim_fpm_rel
-## Purpose: Run microsimulation model for comparing survival extrapolation results
-##          Relative survival framework
+## Filename: 04a1_Markov_fpm_ac_microsim
+## Purpose: Run Markov (clock-forward) model using microsimulation package with
+##          flexible parametric models within an all-cause survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
 
 ## Set seed for coherency
@@ -8,7 +8,7 @@ set.seed(12345)
 
 ##############################################################
 ##============================================================
-## Read packages
+##Read packages
 ##============================================================
 ##############################################################
 library(tidyverse)
@@ -25,29 +25,6 @@ source("03a_survmod_fpm.R")
 
 ##############################################################
 ##============================================================
-## Read population mortality files 
-##============================================================
-##############################################################
-## Read the popmort file
-popmort <- readRDS("../Data/01b_popmort.rds")
-names(popmort)
-
-## Transform sex variable to stay coherent with the data
-popmort2 = transform(popmort, cohort=year-age)
-popmort2 = arrange(popmort2, cohort, sex, age)
-
-## Check the cohort data
-table(popmort2$cohort)
-
-## Define a function for drawing a piecewise constant rate
-## Birth cohort approach 
-## getRates_cohort(1, 1942) means male, dx 2003 and age 61 -> cohort = 1942
-getRates_cohort = function(.sex, .cohort) { # .cohort = year-age
-  subset(popmort2, sex==.sex & cohort==.cohort)
-}
-
-##############################################################
-##============================================================
 ## The complete microsimulation model without cost data and no discount
 ##============================================================
 ##############################################################
@@ -61,14 +38,9 @@ sourceCpp(code="
   #include <microsimulation.h>
   using namespace arma;
   using namespace ssim;
-  enum state_t {PFS, Prog, ExcD, ExpD};
-  enum event_t {toPFS, toProg, toExcD, toExpD, toEOS};
+  enum state_t {PFS, Prog, AcD};
+  enum event_t {toPFS, toProg, toAcD, toEOS};
   typedef ssim::SummaryReport<short,short> Report;
-  /**
-      Utility: Random exponential using rate parameterisation
-  */
-  double rexpRate(double rate) { return R::rexp(1.0/rate); }
-  // template<class T> double rexpRate(T rate) { return R::rexp(1.0/as<double>(rate)); }
   /**
       Utility: Run a set of simulations for a single process
   */
@@ -93,18 +65,12 @@ sourceCpp(code="
     ssim::gsm m1; 
     ssim::gsm m2;
     ssim::gsm m3;
-    double dxage;
     int treat; // treat variable indicating 1=RFC or 0=FC
     IDM(Rcpp::List param, Report *report) : id(-1), param(param), report(report), background() {
-       // get the rates from param
-      vec mu0 = as<vec>(param(\"mu0\"));
-      vec ages = as<vec>(param(\"ages\"));
-      background = ssim::Rpexp(mu0.memptr(), ages.memptr(), ages.size());
       // read in from param...
       m1 = ssim::gsm(as<List>(param(\"m1\")));
       m2 = ssim::gsm(as<List>(param(\"m2\")));
       m3 = ssim::gsm(as<List>(param(\"m3\")));
-      dxage = param(\"dxage\");
       treat = param(\"treat\");
       }
     void pfs();
@@ -116,8 +82,7 @@ sourceCpp(code="
     state = PFS;
     report -> setUtility(0.8);
     scheduleAt(m1.randU(R::runif(0.0,1.0), now()),toProg);
-    scheduleAt(m2.randU(R::runif(0.0,1.0), now()),toExcD);
-    scheduleAt(background.rand(std::exp(-R::rexp(1.0)), dxage+now())-dxage, toExpD);
+    scheduleAt(m2.randU(R::runif(0.0,1.0), now()),toAcD);
   }
   /**
       Initialise a simulation run for an individual
@@ -134,7 +99,7 @@ sourceCpp(code="
                        id, state, msg->kind, this->previousEventTime, ssim::now());
     report->add(state, msg->kind, this->previousEventTime, ssim::now(), id);
     cancel_events();
-    scheduleAt(15, toEOS); // End of study--Time horizon 15 years
+    scheduleAt(50, toEOS); // End of study--Time horizon 50 years
     switch(msg->kind) {
     case toPFS:
       pfs();
@@ -142,15 +107,10 @@ sourceCpp(code="
     case toProg:
       state = Prog;
       report -> setUtility(0.6);
-      scheduleAt(m3.randU(R::runif(0.0,1.0)) + now(), toExcD);
-      scheduleAt(background.rand(std::exp(-R::rexp(1.0)), dxage+now())-dxage, toExpD);
+      scheduleAt(m3.randU(R::runif(0.0,1.0), now()), toAcD); // Caution: delayed entry, clock-forward
       break;
-    case toExcD:
-      state = ExcD;
-      report -> setUtility(0.0);
-      break;
-    case toExpD:
-      state = ExpD;
+    case toAcD:
+      state = AcD;
       report -> setUtility(0.0);
       break;
     case toEOS:
@@ -181,8 +141,8 @@ simulations_reduced = function(n, param, simulator=callSim_reduced, indivp=TRUE)
   object = simulator(n, param, indivp)
   if(!all(c("ut","costs","pt","events","prev") %in% names(object)))
     stop("simulator failed")
-  stateT = c("PFS", "Prog", "ExcD", "ExpD")
-  eventT = c("toPFS", "toProg", "toExcD", "toExpD", "toEOS")
+  stateT = c("PFS", "Prog", "AcD")
+  eventT = c("toPFS", "toProg", "toAcD", "toEOS")
   for (name in c("ut","costs","pt","events","prev"))
     object[[name]] = transform(object[[name]], state=stateT[Key+1], time=age, Key=NULL, age=NULL)
   object$events = transform(object$events, event=eventT[event+1])
@@ -204,14 +164,10 @@ results <- lapply(treat_values, function(treat_value) {
                   partitionBy = 0.1,
                   discountRate = 0,
                   debug = FALSE,
-                  dxage = 61, 
-                  ## Background rate
-                  mu0 = getRates_cohort(3, 2005 - 61)$rate, # Draw a rate from sex 0/1, year 2003/2006 - age
-                  ages = getRates_cohort(3, 2005 - 61)$age,
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
-                  m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m2 = gsm_design(m2_fpm_ac, newdata = ndata),
+                  m3 = gsm_design(m3_Markov_fpm_ac, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     return(sim)
@@ -222,8 +178,8 @@ results_FC <- results[[1]]
 results_RFC <- results[[2]]
 
 ## Save results
-saveRDS(results_FC, file = "../Data/04a_extrap_microsim_fpm_rel_FC.rds")
-saveRDS(results_RFC, file = "../Data/04a_extrap_microsim_fpm_rel_RFC.rds")
+saveRDS(results_FC, file = "../Data/04a1_Markov_fpm_ac_microsim_FC.rds")
+saveRDS(results_RFC, file = "../Data/04a1_Markov_fpm_ac_microsim_RFC.rds")
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

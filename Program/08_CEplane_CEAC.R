@@ -25,7 +25,7 @@ library(pracma)
 ##============================================================
 ##############################################################
 ## Read data
-load("../Data/07_PSA.RData")
+load("../Data/07_fullmod_PSA.RData")
 PSA_results <- output_df
 
 ##############################################################
@@ -328,11 +328,11 @@ source("williams_function PSAprob.R")
 ##############################################################
 ## Plot of cost-effectiveness plane for both results
 plot1 <- ggplot() +
-           geom_point(data = PSA_results, aes(x = disQALY_inc, y = disCost_inc, color="Microsimulation: FPM, RSF"), alpha = 0.8, size = 2) +
+           geom_point(data = PSA_results, aes(x = disQALY_inc, y = disCost_inc, color="Semi-Markov: FPM, RSF"), alpha = 0.8, size = 2) +
            geom_point(data = williams2017_PSA, aes(x = incQALY, y = incCost, color="Semi-Markov: SPM, ASF (Williams 2017)"), alpha = 0.8, size = 2) +
            scale_x_continuous(breaks = seq(-2, 2, 1), limits = c(-2, 2), expand = c(0, 0)) +
            scale_y_continuous(breaks = seq(0, 20000, 5000), expand = c(0, 0), limits = c(0, 20000)) +
-           scale_color_manual(values = c("Semi-Markov: SPM, ASF (Williams 2017)" = "royalblue2", "Microsimulation: FPM, RSF" = "gold")) +
+           scale_color_manual(values = c("Semi-Markov: SPM, ASF (Williams 2017)" = "royalblue2", "Semi-Markov: FPM, RSF" = "gold")) +
            labs(x = "Incremental QALY", y = "Incremental Cost (£)") +
            labs(color="") +
            geom_hline(yintercept = 0, linetype = "dashed") +
@@ -358,11 +358,11 @@ ggsave("../Output/08_rel_CEplane_comparison.png", plot1, width = 10, height = 7,
       
 ### Plot of cost-effectiveness acceptability curves 
 plot2 <- ggplot()+
-              geom_line(data = CEAC_Data, aes(x = Threshold, y = Prob_CE, color = "Microsimulation: FPM, RSF"), linewidth = 2.0) +
+              geom_line(data = CEAC_Data, aes(x = Threshold, y = Prob_CE, color = "Semi-Markov: FPM, RSF"), linewidth = 2.0) +
               geom_line(data = williams2017_PSA_CEAC, aes(x = Threshold, y = Prob_CE_williams, color = "Semi-Markov: SPM, ASF (Williams 2017)"), linewidth = 2.0) +
               scale_x_continuous(breaks = seq(0, 100000, 20000), limits = c(0, 100000), 
                                  expand = c(0.05, 0.05), labels = scales::comma) +
-              scale_color_manual(values = c("Microsimulation: FPM, RSF" = "gold", "Semi-Markov: SPM, ASF (Williams 2017)" = "royalblue2")) +
+              scale_color_manual(values = c("Semi-Markov: FPM, RSF" = "gold", "Semi-Markov: SPM, ASF (Williams 2017)" = "royalblue2")) +
               ylim(0, 1) +
               xlab("Cost-effectiveness threshold (£)") +
               ylab("Probability of RFC being cost-effective") +
@@ -394,6 +394,7 @@ plot <- ggarrange(plot1, plot2, ncol = 2,
                   common.legend = FALSE,
                   align = "h") 
 plot
+
 ggsave("../Output/08_rel_CEplane_CEAC.png", plot, width = 10, height = 7, units = "in", dpi = 300)
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.

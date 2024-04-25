@@ -1,6 +1,7 @@
-## Filename: 04a_extrap_microsim_williams_ac
-## Purpose: Run the complete microsimulation model with standard parametric
-##          models (m1: gompertz; m2: g-gamma; m3: gompertz) same as the base-case
+## Filename: 04a7_semiMarkov_williams_ac_microsim
+## Purpose: Run semi-Markov (clock-reset) model using microsimulation package with
+##          flexible parametric models within an all-cause survival framework
+##          Models (m1: gompertz; m2: g-gamma; m3: gompertz) same as the base-case
 ##          analysis as Williams et al. 2017. 
 ##          Using all-cause survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
@@ -227,7 +228,7 @@ transmod2 <- create_IndivCtstmTrans(transmod_params2,
                                      input_data = transmod_data,
                                      trans_mat = tmat,
                                      clock = "reset")
-transmod_params3 <- params_surv_list(create_params(m3_gom,uncertainty="none"))
+transmod_params3 <- params_surv_list(create_params(m3_semiMarkov_gom, uncertainty="none"))
 transmod3 <- create_IndivCtstmTrans(transmod_params3, 
                                      input_data = transmod_data,
                                      trans_mat = tmat,
@@ -259,8 +260,8 @@ results_FC <- results[[1]]
 results_RFC <- results[[2]]
 
 ## Save results
-saveRDS(results_FC, file = "../Data/04a_extrap_microsim_williams_ac_FC.rds")
-saveRDS(results_RFC, file = "../Data/04a_extrap_microsim_williams_ac_RFC.rds")
+saveRDS(results_FC, file = "../Data/04a7_semiMarkov_williams_ac_microsim_FC.rds")
+saveRDS(results_RFC, file = "../Data/04a7_semiMarkov_williams_ac_microsim_RFC.rds")
 
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.

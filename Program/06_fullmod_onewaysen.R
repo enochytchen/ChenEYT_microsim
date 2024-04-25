@@ -1,6 +1,9 @@
-## Filename: 06_onewaysen
+## Filename: 06_fullmod_onewaysen.R
 ## Purpose: Run microsimulation model for one-way sensitivity analysis
-##          Relative survival framework
+##          The complete microsimulation model same as "05_fullmod_microsim_fpm_rel.R"
+##          semi-Markov (clock-reset) model using microsimulation package with
+##          flexible parametric models within a relative survival framework
+##          with costs
 ## Caution: Must have installed the lastest Rtools and R4.2.2+
 
 ## Set seed for coherency
@@ -492,7 +495,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -521,7 +524,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -804,7 +807,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)))
     
     sim <- simulations_reduced(1e4, param = param, indivp = FALSE)
     
@@ -833,7 +836,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata, t0=4, newdata0=data.frame(treat = 0)),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -1113,7 +1116,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -1142,7 +1145,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -1424,7 +1427,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -1453,7 +1456,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -1735,7 +1738,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -1764,7 +1767,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -1830,7 +1833,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -1858,7 +1861,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -1924,7 +1927,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -1952,7 +1955,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -2018,7 +2021,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -2046,7 +2049,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -2112,7 +2115,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -2140,7 +2143,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -2206,7 +2209,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -2234,7 +2237,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -2300,7 +2303,7 @@ results <- lapply(treat_values, function(treat_value) {
                   ## Survival models
                   m1 = gsm_design(m1_fpm, newdata = ndata),
                   m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                  m3 = gsm_design(m3_fpm_rel, newdata = ndata))
+                  m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata))
     
     sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
     
@@ -2328,7 +2331,7 @@ results <- lapply(treat_values, function(treat_value) {
                 ## Survival models
                 m1 = gsm_design(m1_fpm, newdata = ndata),
                 m2 = gsm_design(m2_fpm_rel, newdata = ndata),
-                m3 = gsm_design(m3_fpm_rel, newdata = ndata),
+                m3 = gsm_design(m3_semiMarkov_fpm_rel, newdata = ndata),
                 ## Cost data
                 ## RFC
                 ## PFS
@@ -2402,7 +2405,7 @@ ft <- align(ft, align = c("right"), i = 3)
 ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; QALY, quality-adjusted life year.")
 ft
 
-save_as_docx(ft, path="../Output/06_onewaysen.docx")
+save_as_docx(ft, path="../Output/06_fullmod_onewaysen.docx")
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

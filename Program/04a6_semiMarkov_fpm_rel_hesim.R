@@ -1,3 +1,8 @@
+## Filename: 04a6_semiMarkov_fpm_rel_hesim
+## Purpose: Run semi-Markov (clock-reset) model using hesim package with
+##          flexible parametric models within a relative survival framework
+## Notes: Must have installed the lastest Rtools and R4.2.2+
+
 library(data.table)
 source("03a_survmod_fpm.R")
 library(hesim)
@@ -82,7 +87,7 @@ transmod_params <- params_surv_list(create_params(m1_flexfpm_ac,uncertainty="non
                                     background,
                                     create_params(m2_flexfpm_rel,uncertainty="none"),
                                     background,
-                                    create_params(m3_flexfpm_rel,uncertainty="none"))
+                                    create_params(m3_semiMarkov_flexfpm_rel,uncertainty="none"))
 transmod <- create_IndivCtstmTrans(transmod_params, 
                                    input_data = transmod_data,
                                    trans_mat = tmat,

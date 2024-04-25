@@ -1,4 +1,4 @@
-## Filename: 07_PSA
+## Filename: 07_fullmod_PSA
 ## Purpose: Run microsimulation model for probabilistic sensitivity analysis
 ##          Relative survival framework
 ## Caution: Must have installed the lastest Rtools and R4.2.2+
@@ -447,8 +447,11 @@ bootstrap <- function(iterations){
                   if(i==1){
                     model_name <- paste0("m", i, "_fpm")
                   }
-                  else{
+                  else if(i==2){
                     model_name <- paste0("m", i, "_fpm_rel")
+                  }  
+                  else if(i==3){
+                    model_name <- paste0("m", i, "_semiMarkov_fpm_rel")
                   }
                   model <- get(model_name)
                   modified_model <- model
@@ -472,7 +475,7 @@ bootstrap <- function(iterations){
                                 ## Survival models
                                 m1 = gsm_design(m1_fpm_star, newdata = ndata),
                                 m2 = gsm_design(m2_fpm_rel_star, newdata = ndata),
-                                m3 = gsm_design(m3_fpm_rel_star, newdata = ndata))
+                                m3 = gsm_design(m3_semiMarkov_fpm_rel_star, newdata = ndata))
                   
                   sim <- simulations_reduced(1e5, param = param, indivp = FALSE)
                   
@@ -513,7 +516,7 @@ bootstrap <- function(iterations){
                               ## Survival models
                               m1 = gsm_design(m1_fpm_star, newdata = ndata),
                               m2 = gsm_design(m2_fpm_rel_star, newdata = ndata),
-                              m3 = gsm_design(m3_fpm_rel_star, newdata = ndata),
+                              m3 = gsm_design(m3_semiMarkov_fpm_rel_star, newdata = ndata),
                               ## Cost data
                               ## RFC
                               ## PFS
@@ -594,7 +597,7 @@ output <- mclapply(1:1000, function(i) {
 
 output_df <- do.call(rbind, output)
                         
-save(output_df, file = "../Data/07_PSA.RData")
+save(output_df, file = "../Data/07_fullmod_PSA.RData")
 ################################################################
 # Copyright 2023 Chen EYT. All Rights Reserved.
 # A microsimulation model incorporating relative survival extrapolation and 

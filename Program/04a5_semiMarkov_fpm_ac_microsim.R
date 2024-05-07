@@ -1,4 +1,4 @@
-## Filename: 04a5_extrap_microsim_fpm_ac
+## Filename: 04a5_semiMarkov_fpm_ac_microsim
 ## Purpose: Run semi-Markov (clock-reset) model using microsimulation package with
 ##          flexible parametric models within an all-cause survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
@@ -99,7 +99,7 @@ sourceCpp(code="
                        id, state, msg->kind, this->previousEventTime, ssim::now());
     report->add(state, msg->kind, this->previousEventTime, ssim::now(), id);
     cancel_events();
-    scheduleAt(50, toEOS); // End of study--Time horizon 50 years
+    scheduleAt(50.1, toEOS); // End of study--Time horizon 50 years
     switch(msg->kind) {
     case toPFS:
       pfs();
@@ -178,12 +178,13 @@ results_FC <- results[[1]]
 results_RFC <- results[[2]]
 
 ## Save results
-saveRDS(results_FC, file = "../Data/04a5_semiMarkov_fpm_ac_microsim_FC.rds")
-saveRDS(results_RFC, file = "../Data/04a5_semiMarkov_fpm_ac_microsim_RFC.rds")
+## Prevent from changing the results. We put # here.
+# saveRDS(results_FC, file = "../Data/04a5_semiMarkov_fpm_ac_microsim_FC.rds")
+# saveRDS(results_RFC, file = "../Data/04a5_semiMarkov_fpm_ac_microsim_RFC.rds")
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

@@ -377,9 +377,9 @@ legend(0.2, 1, c("FPM all-cause (RFC)", "FPM all-cause (FC)", "FPM relative (RFC
 title(main="Progression -> death", cex.main=1)
 
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

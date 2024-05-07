@@ -4,9 +4,7 @@
 ## Reference: Williams C, Lewsey JD, Briggs AH, Mackay DF. 
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. 
 ##            Med Decis Making. 2017 May;37(4):340–52.
-##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial © 2017 by Williams C. et al is licensed under CC BY 3.0. 
-
-setwd("../Data")
+##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial © 2017 by Williams C. et al is licensed under CC BY 3.0.
 
 ##############################################################
 ##============================================================
@@ -53,12 +51,13 @@ ggplot(basecase, aes(x = time, y = surv, color=as.factor(treat))) +
 ## Save extrapolation results
 ##============================================================
 ##############################################################
-write.table(basecase, file = "01a_williams2017.txt", sep = " ",
-            row.names = FALSE, col.names = TRUE,  quote = FALSE)
+## Prevent from changing the results. We put # here.
+# write.table(basecase, file = "01a_williams2017.txt", sep = " ",
+#             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

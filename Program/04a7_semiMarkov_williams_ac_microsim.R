@@ -12,6 +12,7 @@
 
 ## Set seed for coherency
 set.seed(12345)
+
 ##############################################################
 ##============================================================
 ## Read packages
@@ -121,7 +122,7 @@ sourceCpp(code="
                        id, state, msg->kind, this->previousEventTime, ssim::now());
     report->add(state, msg->kind, this->previousEventTime, ssim::now(), id);
     cancel_events();
-    scheduleAt(50, toEOS); // End of study--Time horizon 15 years
+    scheduleAt(50.1, toEOS); // End of study--Time horizon 15 years
     switch(msg->kind) {
     case toPFS:
       pfs();
@@ -213,6 +214,12 @@ prepare_input_data = function(strategies=NULL,
         transmod_data[["(Intercept)"]] = 1
     return(transmod_data)
 }
+
+##############################################################
+##============================================================
+## Use hesim to read the standaradized models
+##============================================================
+##############################################################
 tmat = matrix(c(NA,1, NA,NA), 2,2,TRUE)
 colnames(tmat) = rownames(tmat) = c("Base", "Next")
 transmod_data = prepare_input_data(n_patients = 1, tmat=tmat, 
@@ -243,7 +250,7 @@ results<- lapply(treat_values, function(treat_value) {
                               ndata <- data.frame(treat = treat_value)
                               param <- list(treat = treat_value,
                                             partitionBy = 0.1,
-                                            discountRate = 0.035,
+                                            discountRate = 0,
                                             debug = FALSE,
                                             dxage = 61, 
                                             ## Survival models
@@ -260,13 +267,14 @@ results_FC <- results[[1]]
 results_RFC <- results[[2]]
 
 ## Save results
-saveRDS(results_FC, file = "../Data/04a7_semiMarkov_williams_ac_microsim_FC.rds")
-saveRDS(results_RFC, file = "../Data/04a7_semiMarkov_williams_ac_microsim_RFC.rds")
+## Prevent from changing the results. We put # here.
+# saveRDS(results_FC, file = "../Data/04a7_semiMarkov_williams_ac_microsim_FC.rds")
+# saveRDS(results_RFC, file = "../Data/04a7_semiMarkov_williams_ac_microsim_RFC.rds")
 
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

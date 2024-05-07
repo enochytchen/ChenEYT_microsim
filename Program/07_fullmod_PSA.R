@@ -596,12 +596,14 @@ output <- mclapply(1:1000, function(i) {
           }, mc.cores = 6)
 
 output_df <- do.call(rbind, output)
-                        
-save(output_df, file = "../Data/07_fullmod_PSA.RData")
+
+## Save results
+## Prevent from changing the results. We put # here.                        
+# save(output_df, file = "../Data/07_fullmod_PSA.RData")
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

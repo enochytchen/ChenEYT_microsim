@@ -135,7 +135,6 @@ m3_Markov_gom <- flexsurvreg(Surv(Tstart, Tstop, status)~ treat,
                                  dist="gompertz",
                                  data=msmcancer3)
 
-
 ## Predict hazards
 ## RFC
 plotdataRFC_m3_w$haz_m3_gom_semiMarkov <- predict(m3_semiMarkov_gom, newdata = plotdataRFC_m3_w, type = "haz", times = plotdataRFC_m3_w$time)[[1]][[1]]$".pred_hazard"
@@ -157,9 +156,9 @@ legend(5, 0.05, c("Gompertz (RFC)", "Gompertz (FC)"), bty="n",
 title(main="Progression -> death", cex.main=1)
 
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

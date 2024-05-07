@@ -2395,7 +2395,12 @@ df <- as.data.frame(var_matrix)
 
 ## Set colnames and rownames
 colnames(df) <- c("Base Case Assumption", "Sensitivity Analysis", "Cost per QALY Gained")
-saveRDS(df, "../Data/06_rel_onewaysen")
+
+## Save results
+## Prevent from changing the results. We put # here.
+# saveRDS(df, "../Data/06_fullmod_onewaysen")
+
+df <- readRDS("../Data/06_fullmod_onewaysen")
 
 ## Export as docx
 ## Make a flextable and export it as docx 
@@ -2403,13 +2408,16 @@ ft <- flextable(df)
 ft <- autofit(ft)
 ft <- align(ft, align = c("right"), i = 3)
 ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; QALY, quality-adjusted life year.")
+ft <- set_caption(ft, as_paragraph(as_b("Appendix C. One-way sensitivity analysis.")),  align_with_table = TRUE)
 ft
 
-save_as_docx(ft, path="../Output/06_fullmod_onewaysen.docx")
+## Save results
+## Prevent from changing the results. We put # here.
+# save_as_docx(ft, path="../Output/06_fullmod_onewaysen.docx")
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

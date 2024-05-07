@@ -1,7 +1,6 @@
 ## Filename: 04a1_Markov_fpm_ac_mstate
 ## Purpose: Run Markov (clock-forward) model using mstate package with
 ##          flexible parametric models within an all-cause survival framework
-## Notes: 
 
 ##############################################################
 ##============================================================
@@ -60,12 +59,14 @@ Markov_fpm <- bind_rows(fpm1fpm2fpm3sim_RFC, fpm1fpm2fpm3sim_FC)
 ggplot(Markov_fpm, aes(x = time, y = surv, color=as.factor(treat))) +
   geom_line()
 
-write.table(Markov_fpm, file = "../Data/04a1_Markov_fpm_ac_mstate.txt", sep = " ",
-            row.names = FALSE, col.names = TRUE,  quote = FALSE)
+## Save results
+## Prevent from changing the results. We put # here.
+# write.table(Markov_fpm, file = "../Data/04a1_Markov_fpm_ac_mstate.txt", sep = " ",
+#             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ##############################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

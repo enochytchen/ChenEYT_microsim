@@ -3,9 +3,7 @@
 ##          8 years of follow-up from CLL-8 trial
 ## Reference: Fischer K, Bahlo J, Fink AM, Goede V, Herling CD, Cramer P, et al. 
 ##            Long-term remissions after FCR chemoimmunotherapy in previously untreated patients with CLL: updated results of the CLL8 trial.
-##            Blood. 2016 Jan 14;127(2):208–15.  
-
-setwd("../Data")
+##            Blood. 2016 Jan 14;127(2):208–15.
 
 ##############################################################
 ##============================================================
@@ -53,9 +51,10 @@ print(is_decreasing)
 is_decreasing <- all(diff(surv_FC$surv) <= 0)
 print(is_decreasing)  
 
-### Save the data 
-write.table(surv_RFC, "01a_fischer2016_surv_RFC.txt", row.names = FALSE)
-write.table(surv_FC, "01a_fischer2016_surv_FC.txt", row.names = FALSE)
+## Save the data
+## Prevent from changing the results. We put # here.
+# write.table(surv_RFC, "01a_fischer2016_surv_RFC.txt", row.names = FALSE)
+# write.table(surv_FC, "01a_fischer2016_surv_FC.txt", row.names = FALSE)
 
 ##############################################################
 ##============================================================
@@ -94,8 +93,9 @@ nrisk<- c(409, 360, 232, 297, 262, 220, 100, 33, 1)
 nrisk_FC <- data.frame(i, trisk, lower, upper, nrisk)  
 
 ## Save the data 
-write.table(nrisk_RFC, "01a_fischer2016_nrisk_RFC.txt", row.names = FALSE)
-write.table(nrisk_FC, "01a_fischer2016_nrisk_FC.txt", row.names = FALSE)
+## Prevent from changing the results. We put # here.
+# write.table(nrisk_RFC, "01a_fischer2016_nrisk_RFC.txt", row.names = FALSE)
+# write.table(nrisk_FC, "01a_fischer2016_nrisk_FC.txt", row.names = FALSE)
 
 ##############################################################
 ##============================================================
@@ -142,12 +142,13 @@ plot(mfit,
      main = "Kaplan-Meier estimates")
 
 ## Save the data
-write.table(fischer2016, file = "01a_fischer2016.txt", sep = " ",
-            row.names = FALSE, col.names = TRUE,  quote = FALSE)
+## Prevent from changing the results. We put # here.
+# write.table(fischer2016, file = "01a_fischer2016.txt", sep = " ",
+#             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

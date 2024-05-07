@@ -669,13 +669,17 @@ ft <- flextable(df)
 ft <- autofit(ft)
 ft <- align(ft, align = c("right"), i = NULL, j = 2:4)
 ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; QALY, quality-adjusted life year; PFS, progression-free survival.")
+ft <- set_caption(ft,  as_paragraph(as_b("Appendix B. Base case analysis results of the semi-Markov model using flexible parametric models within a relative survival framework (semi-Markov: FPMs, RSF).")))
 ft
-save_as_docx(ft, path="../Output/05_fullmod_semiMarkov_fpm_rel_microsim.docx")
+
+## Save results
+## Prevent from changing the results. We put # here.
+# save_as_docx(ft, path="../Output/05_fullmod_semiMarkov_fpm_rel_microsim.docx")
 
 ################################################################
-# Copyright 2023 Chen EYT. All Rights Reserved.
-# A microsimulation model incorporating relative survival extrapolation and 
-# multiple timescales for health technology assessment
+# Copyright 2024 Chen EYT. All Rights Reserved.
+# A Multistate Model Incorporating Relative Survival Extrapolation and 
+# Mixed Time Scales for Health Technology Assessment
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

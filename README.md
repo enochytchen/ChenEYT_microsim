@@ -1,4 +1,5 @@
-# Copyright 2024 Chen EYT. All Rights Reserved.# A Multistate Model Incorporating Relative Survival Extrapolation and # Mixed Time Scales for Health Technology Assessment
+## Copyright 2024 Chen EYT. All Rights Reserved.
+## A Multistate Model Incorporating Relative Survival Extrapolation and Mixed Time Scales for Health Technology Assessment
 
 For reproducing the analyses from the study entitled "A Multistate Model Incorporating Relative Survival Extrapolation and Mixed Time Scales for Health Technology Assessment". Parts of the data and syntaxes used in this study were from the supplementary materials of Williams et al.'s study (available from: www.gla.ac.uk/hehta/reports/cwilliams).
 

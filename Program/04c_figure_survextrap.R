@@ -184,7 +184,10 @@ plot_RFC <- ggplot() +
             # Observed 4 years (Hallek2010)
             geom_step(data = mfit1_data_RFC, aes(x = time, y = surv*100, color = "l1", linetype = "l1"), inherit.aes = FALSE,
             direction = "hv", linewidth = 1.2, alpha = 0.8) +
-            labs(x = "Time (years)", y = "Survival probability (%)", fill = "") +
+            geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+            geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+            geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+            labs(x = "Time since study entry (years)", y = "Survival probability (%)", fill = "") +
             scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
                                labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
             scale_y_continuous(breaks = seq(0, 100, by = 20), limits = c(0, 100),
@@ -244,7 +247,10 @@ plot_FC <- ggplot() +
   # Observed 4 years (Hallek2010)
   geom_step(data = mfit1_data_FC, aes(x = time, y = surv*100, color = "l1", linetype = "l1"), inherit.aes = FALSE,
             direction = "hv", linewidth = 1.2, alpha = 0.8) +
-  labs(x = "Time (years)", y = "Survival probability (%)", fill = "") +
+  geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+  geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
+  geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
+  labs(x = "Time since study entry (years)", y = "Survival probability (%)", fill = "") +
   scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
                      labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
   scale_y_continuous(breaks = seq(0, 100, by = 20), limits = c(0, 100),
@@ -292,7 +298,8 @@ plot
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# ggsave("../Output/04c_figure_survextrap.png", plot, width = 10, height = 7, units = "in", dpi = 300)
+# ggsave("../Output/04c_figure_survextrap.png", plot, bg = "white",
+# width = 10, height = 7, units = "in", dpi = 300)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

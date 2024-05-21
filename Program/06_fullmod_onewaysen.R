@@ -2408,7 +2408,7 @@ ft <- flextable(df)
 ft <- autofit(ft)
 ft <- align(ft, align = c("right"), i = 3)
 ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; QALY, quality-adjusted life year.")
-ft <- set_caption(ft, as_paragraph(as_b("Appendix C. One-way sensitivity analysis.")),  align_with_table = TRUE)
+ft <- set_caption(ft, as_paragraph(as_b("Appendix D. One-way sensitivity analysis.")),  align_with_table = TRUE)
 ft
 
 ## Save results

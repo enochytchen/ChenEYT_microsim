@@ -56,7 +56,7 @@ trans1_RFC <- ggplot() +
                                  labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 2, by = 0.5), limits = c(0, 2), 
                                  labels = seq(0, 2, by = 0.5)) +
-              labs(x = "Time since study  (years)", y = "Hazard", title = "RFC") +
+              labs(x = "Time since study entry  (years)", y = "Hazard", title = "RFC") +
               scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                                  name = "") +
@@ -95,7 +95,7 @@ trans1_FC <- ggplot() +
                                  labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 2, by = 0.5), limits = c(0, 2), 
                                  labels = seq(0, 2, by = 0.5)) +
-              labs(x = "Time since study  (years)", y = "Hazard",
+              labs(x = "Time since study entry  (years)", y = "Hazard",
                    title = "FC") +
               scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
@@ -152,7 +152,7 @@ trans2_RFC <- ggplot() +
                                  labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 0.1, by = 0.02), limits = c(0, 0.1), 
                      labels = seq(0, 0.1, by = 0.02)) +
-              labs(x = "Time since study  (years)", y = "Hazard", title = "RFC") +
+              labs(x = "Time since study entry  (years)", y = "Hazard", title = "RFC") +
               scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
                                  name = "") +
@@ -188,7 +188,7 @@ trans2_FC <- ggplot() +
                                  labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
               scale_y_continuous(breaks = seq(0, 0.1, by = 0.02), limits = c(0, 0.1), 
                                  labels = seq(0, 0.1, by = 0.02)) +
-              labs(x = "Time since study  (years)", y = "Hazard", title = "FC") +
+              labs(x = "Time since study entry  (years)", y = "Hazard", title = "FC") +
               scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
                                  name = "") +
@@ -343,7 +343,7 @@ trans3_RFC <- ggplot() +
                      labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
   scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
                      labels = seq(0, 0.5, by = 0.1)) +
-  labs(x = "Time since study  (years)", y = "Hazard", title = "RFC") +
+  labs(x = "Time since study entry  (years)", y = "Hazard", title = "RFC") +
   scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange")[c(1,4,2,5,3)],
                      labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                      name = "") +
@@ -381,7 +381,7 @@ trans3_FC <- ggplot() +
                      labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
   scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
                      labels = seq(0, 0.5, by = 0.1)) +
-  labs(x = "Time since study  (years)", y = "Hazard", title = "FC") +
+  labs(x = "Time since study entry  (years)", y = "Hazard", title = "FC") +
   scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
                      labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                      name = "") +
@@ -420,8 +420,8 @@ plot <- ggarrange(plot1, plot2, plot3, plot4,
 plot
 
 ## Prevent from changing the results. We put # here.
-# ggsave(filename = "../Output/03b_compare_hazard.pdf", plot, width = 12, height = 20, dpi = 1000)
-
+# ggsave(filename = "../Output/03b_compare_hazard.png", plot, bg = "white",
+#        width = 12, height = 20, dpi = 300)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

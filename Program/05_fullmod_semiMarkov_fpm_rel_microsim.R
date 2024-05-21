@@ -669,7 +669,7 @@ ft <- flextable(df)
 ft <- autofit(ft)
 ft <- align(ft, align = c("right"), i = NULL, j = 2:4)
 ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; QALY, quality-adjusted life year; PFS, progression-free survival.")
-ft <- set_caption(ft,  as_paragraph(as_b("Appendix B. Base case analysis results of the semi-Markov model using flexible parametric models within a relative survival framework (semi-Markov: FPMs, RSF).")))
+ft <- set_caption(ft,  as_paragraph(as_b("Appendix C. Base case analysis results of the semi-Markov model using flexible parametric models within a relative survival framework (semi-Markov: FPMs, RSF).")))
 ft
 
 ## Save results

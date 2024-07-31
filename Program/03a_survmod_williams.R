@@ -112,7 +112,6 @@ title(main="Progression-free -> death", cex.main=1)
 ################################################################
 ## Make a dataset for plotting later
 ## Caution: semi-Markov--time variable is "time"
-##          Markov--time variable is "Tstop"
 plotdataRFC_empty = expand.grid(treat = 1, time=seq(0, 30, length.out = 360))
 plotdataRFC_empty$Tstop <- plotdataRFC_empty$time
 plotdataFC_empty = expand.grid(treat = 0, time=seq(0, 30, length.out = 360))
@@ -130,20 +129,12 @@ m3_semiMarkov_gom <- flexsurvreg(Surv(time, status)~ treat,
 ## Use the plot.flexsurvreg function to see the shape
 plot(m3_semiMarkov_gom, type="hazard")
 
-## Markov
-m3_Markov_gom <- flexsurvreg(Surv(Tstart, Tstop, status)~ treat,
-                                 dist="gompertz",
-                                 data=msmcancer3)
-
 ## Predict hazards
 ## RFC
 plotdataRFC_m3_w$haz_m3_gom_semiMarkov <- predict(m3_semiMarkov_gom, newdata = plotdataRFC_m3_w, type = "haz", times = plotdataRFC_m3_w$time)[[1]][[1]]$".pred_hazard"
-plotdataRFC_m3_w$haz_m3_gom_Markov <- predict(m3_Markov_gom, newdata = plotdataRFC_m3_w, type = "haz", times = plotdataRFC_m3_w$Tstop)[[1]][[1]]$".pred_hazard"
 
 ## FC
 plotdataFC_m3_w$haz_m3_gom_semiMarkov <- predict(m3_semiMarkov_gom, newdata = plotdataFC_m3_w, type = "haz", times = plotdataFC_m3_w$time)[[1]][[1]]$".pred_hazard"
-plotdataFC_m3_w$haz_m3_gom_Markov <- predict(m3_Markov_gom, newdata = plotdataFC_m3_w, type = "haz", times = plotdataFC_m3_w$Tstop)[[1]][[1]]$".pred_hazard"
-
 
 ## Plot the hazards
 ## Semi-Markov as an example

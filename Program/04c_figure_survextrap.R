@@ -4,9 +4,7 @@
 ##          Extrapolated: Semi-Markov with stand parametric models within an all-cause survival framework (Williams et al.)  
 ##                        Semi-Markov with flexible parametric models within an all-cause survival framework
 ##                        Semi-Markov with flexible parametric models within a relative survival framework 
-##                        Markov with stand parametric models within an all-cause survival framework 
-##                        Markov with flexible parametric models within an all-cause survival framework
-##                        Markov with flexible parametric models within a relative survival framework 
+
 ## Reference: Williams C, Lewsey JD, Briggs AH, Mackay DF. 
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. 
 ##            Med Decis Making. 2017 May;37(4):340–52.
@@ -104,24 +102,6 @@ semiMarkov_fpm_ac_RFC <- readRDS("../Data/04a5_semiMarkov_fpm_ac_microsim_RFC.rd
 semiMarkov_fpm_rel_FC <- readRDS("../Data/04a6_semiMarkov_fpm_rel_microsim_FC.rds")
 semiMarkov_fpm_rel_RFC <- readRDS("../Data/04a6_semiMarkov_fpm_rel_microsim_RFC.rds")
 
-##########################################################################
-## Markov with standard parametric models, all-cause survival framework ##
-##########################################################################
-Markov_williams_ac_FC <- readRDS("../Data/04a3_Markov_williams_ac_microsim_FC.rds")
-Markov_williams_ac_RFC <- readRDS("../Data/04a3_Markov_williams_ac_microsim_RFC.rds")
-
-##########################################################################
-## Markov with flexible parametric models, all-cause survival framework ##
-##########################################################################
-Markov_fpm_ac_FC <- readRDS("../Data/04a1_Markov_fpm_ac_microsim_FC.rds")
-Markov_fpm_ac_RFC <- readRDS("../Data/04a1_Markov_fpm_ac_microsim_RFC.rds")
-
-#########################################################################
-## Markov with flexible parametric models, relative survival framework ##
-#########################################################################
-Markov_fpm_rel_FC <- readRDS("../Data/04a2_Markov_fpm_rel_microsim_FC.rds")
-Markov_fpm_rel_RFC <- readRDS("../Data/04a2_Markov_fpm_rel_microsim_RFC.rds")
-
 ##############################################################
 ##============================================================
 ## Calculate overall survival of all the microsim models
@@ -130,10 +110,7 @@ Markov_fpm_rel_RFC <- readRDS("../Data/04a2_Markov_fpm_rel_microsim_RFC.rds")
 # List of data frames
 names <- c("semiMarkov_williams_ac_RFC", "semiMarkov_williams_ac_FC", 
            "semiMarkov_fpm_ac_RFC", "semiMarkov_fpm_ac_FC", 
-           "semiMarkov_fpm_rel_RFC", "semiMarkov_fpm_rel_FC",
-           "Markov_williams_ac_RFC", "Markov_williams_ac_FC", 
-           "Markov_fpm_ac_RFC", "Markov_fpm_ac_FC", 
-           "Markov_fpm_rel_RFC", "Markov_fpm_rel_FC")
+           "semiMarkov_fpm_rel_RFC", "semiMarkov_fpm_rel_FC")
 
 # Loop over each data frame
 for (name in names) {
@@ -169,15 +146,6 @@ plot_RFC <- ggplot() +
             # Semi-Markov: FPMs, RSF (Proposed method)
             geom_line(data = OS_semiMarkov_fpm_rel_RFC, aes(x = time, y = prob*100, color = "l5", linetype = "l5"), inherit.aes = FALSE,
                       linewidth = 1.2, alpha = 0.8) +
-            # Markov: SPMs, ASF
-            geom_line(data = OS_Markov_williams_ac_RFC, aes(x = time, y = prob*100, color = "l6", linetype = "l6"), inherit.aes = FALSE,
-                      linewidth = 1.2, alpha = 0.8) +
-            # Markov: FPMs, ASF
-            geom_line(data = OS_Markov_fpm_ac_RFC, aes(x = time, y = prob*100, color = "l7", linetype = "l7"), inherit.aes = FALSE,
-                      linewidth = 1.2, alpha = 0.8) +
-            # Markov: FPMs, RSF
-            geom_line(data = OS_Markov_fpm_rel_RFC, aes(x = time, y = prob*100, color = "l8", linetype = "l8"), inherit.aes = FALSE,
-                      linewidth = 1.2, alpha = 0.8) +
             # Observed 8 years  (Fischer2016)
             geom_step(data = mfit2_data_RFC, aes(x = time, y = surv*100, color = "l2", linetype = "l2"), inherit.aes = FALSE,
             direction = "hv", linewidth = 1.2, alpha = 0.8)  +
@@ -194,19 +162,16 @@ plot_RFC <- ggplot() +
                                labels = seq(0, 100, by = 20), minor_breaks = seq(0, 100, by = 5)) +
             scale_color_manual(values = c("l1" = "black", "l2" = "darkolivegreen3",
                                           "l3" = "royalblue2", "l4" = "mediumorchid3", 
-                                          "l5" = "gold", "l6" = "darkorange1",
-                                          "l7" = "firebrick2", "l8" = "cyan"), 
+                                          "l5" = "gold"), 
                                labels = c("Observed 4-year OS", "Observed 8-year OS", 
-                                          "Semi-Markov: SPMs, ASF (Williams et al.)", "Semi-Markov: FPMs, ASF", "Semi-Markov: FPMs, RSF (Proposed method)", 
-                                          "Markov: SPMs, ASF", "Markov: FPMs, ASF", "Markov: FPMs, RSF"), 
+                                          "SPMs, ASF (Williams et al.)", "FPMs, ASF", "FPMs, RSF (Proposed method)"), 
                                name = "") +
-            scale_linetype_manual(values = c("l1" = "solid", "l2" = "solid", "l3" = "dashed", "l4" = "twodash", "l5" = "dotdash", "l6" = "longdash", "l7" = "dashed", "l8" = "twodash"), 
-                                  labels = c("Observed 4-year OS", "Observed 8-year OS", "Semi-Markov: SPMs, ASF (Williams et al.)", 
-                                             "Semi-Markov: FPMs, ASF", "Semi-Markov: FPMs, RSF (Proposed method)", 
-                                             "Markov: SPMs, ASF", "Markov: FPMs, ASF", "Markov: FPMs, RSF"), 
+            scale_linetype_manual(values = c("l1" = "solid", "l2" = "solid", "l3" = "dashed", "l4" = "twodash", "l5" = "dotdash"), 
+                                  labels = c("Observed 4-year OS", "Observed 8-year OS", "SPMs, ASF (Williams et al.)", 
+                                             "FPMs, ASF", "FPMs, RSF (Proposed method)"), 
                                   name = "") +
             guides(x = "axis_minor", y = "axis_minor",
-                   color = guide_legend(nrow = 4, override.aes = list(linewidth = 1.2)), linetype = guide_legend(nrow = 4), keyheight = unit(2, "lines")) +
+                   color = guide_legend(nrow = 3, override.aes = list(linewidth = 1.2)), linetype = guide_legend(nrow = 4), keyheight = unit(2, "lines")) +
             theme(legend.position = "bottom",
                   legend.title = element_text(size = 24),
                   legend.key = element_rect(colour = NA, fill = NA),
@@ -232,15 +197,6 @@ plot_FC <- ggplot() +
   # Semi-Markov: FPMs, RSF (Proposed method)
   geom_line(data = OS_semiMarkov_fpm_rel_FC, aes(x = time, y = prob*100, color = "l5", linetype = "l5"), inherit.aes = FALSE,
             linewidth = 1.2, alpha = 0.8) +
-  # Markov: SPMs, ASF
-  geom_line(data = OS_Markov_williams_ac_FC, aes(x = time, y = prob*100, color = "l6", linetype = "l6"), inherit.aes = FALSE,
-            linewidth = 1.2, alpha = 0.8) +
-  # Markov: FPMs, ASF
-  geom_line(data = OS_Markov_fpm_ac_FC, aes(x = time, y = prob*100, color = "l7", linetype = "l7"), inherit.aes = FALSE,
-            linewidth = 1.2, alpha = 0.8) +
-  # Markov: FPMs, RSF
-  geom_line(data = OS_Markov_fpm_rel_FC, aes(x = time, y = prob*100, color = "l8", linetype = "l8"), inherit.aes = FALSE,
-            linewidth = 1.2, alpha = 0.8) +
   # Observed 8 years  (Fischer2016)
   geom_step(data = mfit2_data_FC, aes(x = time, y = surv*100, color = "l2", linetype = "l2"), inherit.aes = FALSE,
             direction = "hv", linewidth = 1.2, alpha = 0.8)  +
@@ -257,19 +213,16 @@ plot_FC <- ggplot() +
                      labels = seq(0, 100, by = 20), minor_breaks = seq(0, 100, by = 5)) +
   scale_color_manual(values = c("l1" = "black", "l2" = "darkolivegreen3",
                                 "l3" = "royalblue2", "l4" = "mediumorchid3", 
-                                "l5" = "gold", "l6" = "darkorange1",
-                                "l7" = "firebrick2", "l8" = "cyan"), 
+                                "l5" = "gold"), 
                      labels = c("Observed 4-year OS", "Observed 8-year OS", 
-                                "Semi-Markov: SPMs, ASF (Williams et al.)", "Semi-Markov: FPMs, ASF", "Semi-Markov: FPMs, RSF (Proposed method)", 
-                                "Markov: SPMs, ASF", "Markov: FPMs, ASF", "Markov: FPMs, RSF"), 
+                                "SPMs, ASF (Williams et al.)", "FPMs, ASF", "FPMs, RSF (Proposed method)"), 
                      name = "") +
-  scale_linetype_manual(values = c("l1" = "solid", "l2" = "solid", "l3" = "dashed", "l4" = "twodash", "l5" = "dotdash", "l6" = "longdash", "l7" = "dashed", "l8" = "twodash"), 
-                        labels = c("Observed 4-year OS", "Observed 8-year OS", "Semi-Markov: SPMs, ASF (Williams et al.)", 
-                                   "Semi-Markov: FPMs, ASF", "Semi-Markov: FPMs, RSF (Proposed method)", 
-                                   "Markov: SPMs, ASF", "Markov: FPMs, ASF", "Markov: FPMs, RSF"), 
+  scale_linetype_manual(values = c("l1" = "solid", "l2" = "solid", "l3" = "dashed", "l4" = "twodash", "l5" = "dotdash"), 
+                        labels = c("Observed 4-year OS", "Observed 8-year OS", "SPMs, ASF (Williams et al.)", 
+                                   "FPMs, ASF", "FPMs, RSF (Proposed method)"), 
                         name = "") +
   guides(x = "axis_minor", y = "axis_minor",
-         color = guide_legend(nrow = 4, override.aes = list(linewidth = 1.2)), linetype = guide_legend(nrow = 4), keyheight = unit(2, "lines")) +
+         color = guide_legend(nrow = 3, override.aes = list(linewidth = 1.2)), linetype = guide_legend(nrow = 4), keyheight = unit(2, "lines")) +
   theme(legend.position = "bottom",
         legend.title = element_text(size = 24),
         legend.key = element_rect(colour = NA, fill = NA),

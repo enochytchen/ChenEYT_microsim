@@ -2378,7 +2378,7 @@ ICER11 <- ICER(results)
 ##============================================================
 ##############################################################
 var_matrix <-  matrix(c("Time horizon of 15 years", "Time horizon extended to 20 years", paste("£",ICER1),
-                        "Observed treatment effects persist", "Treatment effect no longer persists in extrapolation", NA, #ICER2
+                        "Observed treatment effects persist", "Treatment effect no longer persists in extrapolation", paste("£",ICER2),
                          "to the end of the time horizon", NA, NA,
                         "Utilities: PFS = 0.8; progressed = 0.6", "Utilities: PFS = 0.9; progressed = 0.5", paste("£",ICER3),
                         "Utilities: PFS = 0.8; progressed = 0.6", "Utilities: PFS = 0.75; progressed = 0.65", paste("£",ICER4),
@@ -2408,7 +2408,7 @@ ft <- flextable(df)
 ft <- autofit(ft)
 ft <- align(ft, align = c("right"), i = 3)
 ft <- add_footer_lines(ft,"FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; QALY, quality-adjusted life year.")
-ft <- set_caption(ft, as_paragraph(as_b("Appendix D. One-way sensitivity analysis.")),  align_with_table = TRUE)
+ft <- set_caption(ft, as_paragraph(as_b("Appendix C. One-way sensitivity analysis.")),  align_with_table = TRUE)
 ft
 
 ## Save results

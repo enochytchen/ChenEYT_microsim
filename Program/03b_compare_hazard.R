@@ -239,7 +239,8 @@ trans3_RFC <- ggplot() +
               geom_line(data=plotdataRFC_m3_fpm_rel, aes(x=time, y=achaz_semiMarkov, color = "lt3", linetype = "lt3"), linewidth = 1.5, alpha = 0.8) + 
               geom_line(data=plotdataRFC_m3_w, aes(x=time, y=haz_m3_gom_semiMarkov, color = "lt4", linetype = "lt4"), linewidth = 1.5, alpha = 0.8) +
               geom_line(data=plotdataRFC_m3_w, aes(x=0, y=0,  color = "lt5", linetype = "lt5"), linewidth = 1.5, alpha = 0.8) + # for legend
-              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz_semiMarkov, color = "lt1", linetype = "lt1"), linewidth = 1.5, alpha = 0.8) +                geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
+              geom_line(data=plotdataRFC_haz, aes(x=time, y=haz_semiMarkov, color = "lt1", linetype = "lt1"), linewidth = 1.5, alpha = 0.8) +                
+              geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
               scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
@@ -254,7 +255,7 @@ trans3_RFC <- ggplot() +
                                     labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                                     name = "") +
               guides(x = "axis_minor", y = "axis_minor",
-                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     color = guide_legend(nrow = 2, override.aes = list(linewidth = 1.2)), 
                      linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
@@ -292,7 +293,7 @@ trans3_FC <- ggplot() +
                                     labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                                     name = "") +
               guides(x = "axis_minor", y = "axis_minor",
-                     color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
+                     color = guide_legend(nrow = 2, override.aes = list(linewidth = 1.2)), 
                      linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
               theme(legend.position = "bottom",
                     legend.key = element_rect(colour = NA, fill = NA),
@@ -308,120 +309,23 @@ trans3_FC <- ggplot() +
                     legend.text = element_text(size = 18))
 trans3_FC
 
-plot3 <- ggarrange(trans3_RFC, trans3_FC, ncol = 2, nrow = 1, common.legend=TRUE, legend="none")
-plot3 <- annotate_figure(plot3, top = text_grob("(C) Transition 3: Progression -> death (semi-Markov)", 
+plot3 <- ggarrange(trans3_RFC, trans3_FC, ncol = 2, nrow = 1, common.legend=TRUE, legend="bottom")
+plot3 <- annotate_figure(plot3, top = text_grob("(C) Transition 3: Progression -> death", 
                                                 color = "black", face = "bold", size = 24))
 plot3
-
-
-##############################################################
-##============================================================
-## Transition 3 Progression to death (Markov)
-##============================================================
-##############################################################
-## Plot
-## Estimate hazard functions of 4 years
-haz_3RFC <- bshazard::bshazard(Surv(Tstart, Tstop, status) ~ 1, data = msmcancer3RFC)
-haz_3FC <- bshazard::bshazard(Surv(Tstart, Tstop, status)~ 1, data = msmcancer3FC)
-
-plotdataRFC_haz <- data.frame(time = haz_3RFC$time, haz_Markov= haz_3RFC$hazard)
-plotdataFC_haz<- data.frame(time = haz_3FC$time, haz_Markov= haz_3FC$hazard)
-
-## Set the legend order
-breaks = names(colors)[c(4,2,1,3)]
-## Plot using ggplot
-## RFC
-trans3_RFC <- ggplot() + 
-  geom_line(data=plotdataRFC_m3_fpm_ac, aes(x=time, y=haz_Markov, color = "lt2", linetype = "lt2"), linewidth = 1.5, alpha = 0.8) +
-  geom_line(data=plotdataRFC_m3_fpm_rel, aes(x=time, y=achaz_Markov, color = "lt3", linetype = "lt3"), linewidth = 1.5, alpha = 0.8) + 
-  geom_line(data=plotdataRFC_m3_w, aes(x=time, y=haz_m3_gom_Markov, color = "lt4", linetype = "lt4"), linewidth = 1.5, alpha = 0.8) +
-  geom_line(data=plotdataRFC_m3_w, aes(x=0, y=0,  color = "lt5", linetype = "lt5"), linewidth = 1.5, alpha = 0.8) + # for legend
-  geom_line(data=plotdataRFC_haz, aes(x=time, y=haz_Markov, color = "lt1", linetype = "lt1"), linewidth = 1.5, alpha = 0.8) +                geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
-  geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
-  geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-  scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                     labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
-  scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
-                     labels = seq(0, 0.5, by = 0.1)) +
-  labs(x = "Time since study entry  (years)", y = "Hazard", title = "RFC") +
-  scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange")[c(1,4,2,5,3)],
-                     labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
-                     name = "") +
-  scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
-                        labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
-                        name = "") +
-  guides(x = "axis_minor", y = "axis_minor",
-         color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
-         linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
-  theme(legend.position = "bottom",
-        legend.key = element_rect(colour = NA, fill = NA),
-        legend.key.width = unit(1.5, "cm"),
-        panel.grid = element_blank(),
-        panel.background = element_blank(),
-        axis.line = element_line(color = "black"),
-        plot.title = element_text(hjust = 0.5, size = 18),
-        plot.subtitle = element_text(hjust = 0.5, size = 18),
-        axis.text = element_text(size = 12),
-        axis.title.x = element_text(size = 18),
-        axis.title.y = element_text(size = 18),
-        legend.text = element_text(size = 18))
-trans3_RFC
-
-## FC
-trans3_FC <- ggplot() + 
-  geom_line(data=plotdataFC_m3_fpm_ac, aes(x=time, y=haz_Markov, color = "lt2", linetype = "lt2"), linewidth = 1.5, alpha = 0.8) +
-  geom_line(data=plotdataFC_m3_fpm_rel, aes(x=time, y=achaz_Markov, color = "lt3", linetype = "lt3"), linewidth = 1.5, alpha = 0.8) + 
-  geom_line(data=plotdataFC_m3_w, aes(x=time, y=haz_m3_gom_Markov, color = "lt4", linetype = "lt4"), linewidth = 1.5, alpha = 0.8) + 
-  geom_line(data=plotdataFC_m3_w, aes(x=0, y=0,  color = "lt5", linetype = "lt5"), linewidth = 1.5, alpha = 0.8) + # for legend
-  geom_line(data=plotdataFC_haz, aes(x=time, y=haz_Markov, color = "lt1", linetype = "lt1"), linewidth = 1.5, alpha = 0.8) +
-  geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
-  geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
-  geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-  scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                     labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
-  scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
-                     labels = seq(0, 0.5, by = 0.1)) +
-  labs(x = "Time since study entry  (years)", y = "Hazard", title = "FC") +
-  scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
-                     labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
-                     name = "") +
-  scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
-                        labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
-                        name = "") +
-  guides(x = "axis_minor", y = "axis_minor",
-         color = guide_legend(nrow = 1, override.aes = list(linewidth = 1.2)), 
-         linetype = guide_legend(nrow = 1), keyheight = unit(2, "lines")) +
-  theme(legend.position = "bottom",
-        legend.key = element_rect(colour = NA, fill = NA),
-        legend.key.width = unit(1.5, "cm"),
-        panel.grid = element_blank(),
-        panel.background = element_blank(),
-        axis.line = element_line(color = "black"),
-        plot.title = element_text(hjust = 0.5, size = 18),
-        plot.subtitle = element_text(hjust = 0.5, size = 18),
-        axis.text = element_text(size = 12),
-        axis.title.x = element_text(size = 18),
-        axis.title.y = element_text(size = 18),
-        legend.text = element_text(size = 18))
-trans3_FC
-
-plot4 <- ggarrange(trans3_RFC, trans3_FC, ncol = 2, nrow = 1, common.legend=TRUE, legend="bottom")
-plot4 <- annotate_figure(plot4, top = text_grob("(D) Transition 3: Progression -> death (Markov)", 
-                                                color = "black", face = "bold", size = 24))
-plot4
 
 ################################################################
 ## Combine all plots together
 ################################################################
-plot <- ggarrange(plot1, plot2, plot3, plot4,
-                  ncol = 1, nrow = 4,
-                  widths = c(0.05, 0.05, 0.05, 0.05),
+plot <- ggarrange(plot1, plot2, plot3,
+                  ncol = 1, nrow = 3,
+                  widths = c(0.05, 0.05, 0.05),
                   common.legend = TRUE, legend="bottom")
 plot
 
 ## Prevent from changing the results. We put # here.
-# ggsave(filename = "../Output/03b_compare_hazard.png", plot, bg = "white",
-#        width = 12, height = 20, dpi = 300)
+#ggsave(filename = "../Output/03b_compare_hazard.png", plot, bg = "white",
+#       width = 12, height = 16, dpi = 300)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

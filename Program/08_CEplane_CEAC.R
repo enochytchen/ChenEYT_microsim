@@ -49,7 +49,7 @@ plot
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-#ggsave("../Output/08_CEplane_microsim.png", plot, width = 10, height = 7, units = "in", dpi = 300)
+# ggsave("../Output/08_CEplane_microsim.png", plot, width = 10, height = 7, units = "in", dpi = 300)
 
 ##############################################################
 ##============================================================
@@ -332,11 +332,11 @@ source("williams_function PSAprob.R")
 ##############################################################
 ## Plot of cost-effectiveness plane for both results
 plot1 <- ggplot() +
-           geom_point(data = PSA_results, aes(x = disQALY_inc, y = disCost_inc, color="Semi-Markov: FPMs, RSF (Proposed method)"), alpha = 0.8, size = 2) +
-           geom_point(data = williams2017_PSA, aes(x = incQALY, y = incCost, color="Semi-Markov: SPMs, ASF (Williams et al.)"), alpha = 0.8, size = 2) +
+           geom_point(data = PSA_results, aes(x = disQALY_inc, y = disCost_inc, color="FPMs, RSF (Proposed method)"), alpha = 0.8, size = 2) +
+           geom_point(data = williams2017_PSA, aes(x = incQALY, y = incCost, color="SPMs, ASF (Williams et al.)"), alpha = 0.8, size = 2) +
            scale_x_continuous(breaks = seq(-2, 2, 1), limits = c(-2, 2), expand = c(0, 0)) +
            scale_y_continuous(breaks = seq(0, 20000, 5000), expand = c(0, 0), limits = c(0, 20000)) +
-           scale_color_manual(values = c("Semi-Markov: SPMs, ASF (Williams et al.)" = "royalblue2", "Semi-Markov: FPMs, RSF (Proposed method)" = "gold")) +
+           scale_color_manual(values = c("SPMs, ASF (Williams et al.)" = "royalblue2", "FPMs, RSF (Proposed method)" = "gold")) +
            labs(x = "Incremental QALY", y = "Incremental Cost (£)") +
            labs(color="") +
            geom_hline(yintercept = 0, linetype = "dashed") +
@@ -355,7 +355,7 @@ plot1 <- ggplot() +
                   legend.position="bottom", 
                   legend.box="vertical",
                   legend.key = element_rect(colour = NA, fill = NA)) +
-           ggtitle("Cost-effectiveness plane")
+           ggtitle("(A) Cost-effectiveness plane")
       
 plot1
 
@@ -365,11 +365,11 @@ plot1
       
 ### Plot of cost-effectiveness acceptability curves 
 plot2 <- ggplot()+
-              geom_line(data = CEAC_Data, aes(x = Threshold, y = Prob_CE, color = "Semi-Markov: FPMs, RSF (Proposed method)"), linewidth = 2.0) +
-              geom_line(data = williams2017_PSA_CEAC, aes(x = Threshold, y = Prob_CE_williams, color = "Semi-Markov: SPMs, ASF (Williams et al.)"), linewidth = 2.0) +
+              geom_line(data = CEAC_Data, aes(x = Threshold, y = Prob_CE, color = "FPMs, RSF (Proposed method)"), linewidth = 2.0) +
+              geom_line(data = williams2017_PSA_CEAC, aes(x = Threshold, y = Prob_CE_williams, color = "SPMs, ASF (Williams et al.)"), linewidth = 2.0) +
               scale_x_continuous(breaks = seq(0, 100000, 20000), limits = c(0, 100000), 
                                  expand = c(0.05, 0.05), labels = scales::comma) +
-              scale_color_manual(values = c("Semi-Markov: FPMs, RSF (Proposed method)" = "gold", "Semi-Markov: SPMs, ASF (Williams et al.)" = "royalblue2")) +
+              scale_color_manual(values = c("FPMs, RSF (Proposed method)" = "gold", "SPMs, ASF (Williams et al.)" = "royalblue2")) +
               ylim(0, 1) +
               xlab("Cost-effectiveness threshold (£)") +
               ylab("Probability of RFC being cost-effective") +
@@ -390,7 +390,7 @@ plot2 <- ggplot()+
                     legend.position="bottom", 
                     legend.box="vertical",
                     legend.key = element_rect(colour = NA, fill = NA)) +
-              ggtitle("Cost-effectiveness acceptability curve")
+              ggtitle("(B) Cost-effectiveness acceptability curve")
 
 plot2 
 
@@ -406,7 +406,7 @@ plot
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# ggsave("../Output/08_rel_CEplane_CEAC.png", plot, width = 10, height = 7, units = "in", dpi = 300)
+# # ggsave("../Output/08_rel_CEplane_CEAC.png", plot, width = 10, height = 7, units = "in", dpi = 300)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

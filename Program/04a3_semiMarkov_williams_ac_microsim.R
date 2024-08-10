@@ -1,8 +1,9 @@
-## Filename: 04a3_Markov_williams_ac_microsim
-## Purpose: Run Markov (clock-forward) model using microsimulation package with
-##          standard parametric models within an all-cause survival framework
+## Filename: 04a3_semiMarkov_williams_ac_microsim
+## Purpose: Run semi-Markov (clock-reset) model using microsimulation package with
+##          flexible parametric models within an all-cause survival framework
 ##          Models (m1: gompertz; m2: g-gamma; m3: gompertz) same as the base-case
 ##          analysis as Williams et al. 2017. 
+##          Using all-cause survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
 ## Reference: Williams C, Lewsey JD, Briggs AH, Mackay DF. 
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. 
@@ -11,6 +12,7 @@
 
 ## Set seed for coherency
 set.seed(12345)
+
 ##############################################################
 ##============================================================
 ## Read packages
@@ -120,7 +122,7 @@ sourceCpp(code="
                        id, state, msg->kind, this->previousEventTime, ssim::now());
     report->add(state, msg->kind, this->previousEventTime, ssim::now(), id);
     cancel_events();
-    scheduleAt(50.1, toEOS); // End of study--Time horizon 50 years
+    scheduleAt(50.1, toEOS); // End of study--Time horizon 15 years
     switch(msg->kind) {
     case toPFS:
       pfs();
@@ -128,7 +130,7 @@ sourceCpp(code="
     case toProg:
       state = Prog;
       report -> setUtility(0.6);
-      scheduleAt(m3->random(0,0) + now(), toAcD);  // Caution: delayed entry, clock-forward
+      scheduleAt(m3->random(0,0) + now(), toAcD);
       break;
     case toAcD:
     case toEOS:
@@ -212,6 +214,12 @@ prepare_input_data = function(strategies=NULL,
         transmod_data[["(Intercept)"]] = 1
     return(transmod_data)
 }
+
+##############################################################
+##============================================================
+## Use hesim to read the standaradized models
+##============================================================
+##############################################################
 tmat = matrix(c(NA,1, NA,NA), 2,2,TRUE)
 colnames(tmat) = rownames(tmat) = c("Base", "Next")
 transmod_data = prepare_input_data(n_patients = 1, tmat=tmat, 
@@ -221,17 +229,17 @@ transmod_params1 <- params_surv_list(create_params(m1_gom,uncertainty="none"))
 transmod1 <- create_IndivCtstmTrans(transmod_params1, 
                                      input_data = transmod_data,
                                      trans_mat = tmat,
-                                     clock = "forward")
+                                     clock = "reset")
 transmod_params2 <- params_surv_list(create_params(m2_gam,uncertainty="none"))
 transmod2 <- create_IndivCtstmTrans(transmod_params2, 
                                      input_data = transmod_data,
                                      trans_mat = tmat,
-                                     clock = "forward")
-transmod_params3 <- params_surv_list(create_params(m3_Markov_gom,uncertainty="none"))
+                                     clock = "reset")
+transmod_params3 <- params_surv_list(create_params(m3_semiMarkov_gom, uncertainty="none"))
 transmod3 <- create_IndivCtstmTrans(transmod_params3, 
                                      input_data = transmod_data,
                                      trans_mat = tmat,
-                                     clock = "forward")
+                                     clock = "reset")
 
 ##############################################################
 ##============================================================
@@ -242,7 +250,7 @@ results<- lapply(treat_values, function(treat_value) {
                               ndata <- data.frame(treat = treat_value)
                               param <- list(treat = treat_value,
                                             partitionBy = 0.1,
-                                            discountRate = 0.035,
+                                            discountRate = 0,
                                             debug = FALSE,
                                             dxage = 61, 
                                             ## Survival models
@@ -260,8 +268,8 @@ results_RFC <- results[[2]]
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# saveRDS(results_FC, file = "../Data/04a3_Markov_williams_ac_microsim_FC.rds")
-# saveRDS(results_RFC, file = "../Data/04a3_Markov_williams_ac_microsim_RFC.rds")
+# saveRDS(results_FC, file = "../Data/04a3_semiMarkov_williams_ac_microsim_FC.rds")
+# saveRDS(results_RFC, file = "../Data/04a3_semiMarkov_williams_ac_microsim_RFC.rds")
 
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.

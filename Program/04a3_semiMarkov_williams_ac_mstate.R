@@ -1,4 +1,4 @@
-## Filename: 04a7_semiMarkov_williams_ac_mstate
+## Filename: 04a3_semiMarkov_williams_ac_mstate
 ## Purpose: Run semi-Markov (clock-reset) model using mstate package with
 ##          standard parametric models within an all-cause survival framework
 ##          Models (m1: gompertz; m2: g-gamma; m3: gompertz) same as the base-case
@@ -73,7 +73,7 @@ ggplot(semiMarkov_williams, aes(x = time, y = surv, color=as.factor(treat))) +
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# write.table(semiMarkov_williams, file = "../Data/04a7_semiMarkov_williams_ac_mstate.txt", sep = " ",
+# write.table(semiMarkov_williams, file = "../Data/04a3_semiMarkov_williams_ac_mstate.txt", sep = " ",
 #             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ##############################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.

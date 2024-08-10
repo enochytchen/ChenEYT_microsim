@@ -30,8 +30,8 @@ source("02_msmcancer.R")
 ## Make datasets for plotting later
 ##============================================================
 ##############################################################
-plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 30, length.out = 180))
-plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 30, length.out = 180))
+plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 50, length.out = 360))
+plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 50, length.out = 360))
 
 ## Generate a variable for merging with popmort file later
 plotdataRFC_empty$t_floor <- floor(plotdataRFC_empty$Tstop)
@@ -84,7 +84,7 @@ plotdataFC_m1_fpm$haz_m1_fpm <- predict(m1_fpm, plotdataFC_m1_fpm, type = "haz")
 
 ## Plot the hazards
 plot(plotdataRFC_m1_fpm$Tstop, plotdataRFC_m1_fpm$haz, col = "blue", type = "l", lty="solid",
-     xlim=c(0,30), ylim=c(0,1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,50), ylim=c(0,1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m1_fpm$Tstop, plotdataFC_m1_fpm$haz, col = "red", type = "l", lty="solid")
 legend(0.2, 1, c("FPM (RFC)", "FPM (FC)"), bty="n", 
        lty=c("solid", "solid"), 
@@ -190,7 +190,7 @@ popmort2 <- transform(popmort, cohort=att_year-att_age) %>%
 
 ## rate here is the expected hazard
 plot(popmort2$t_floor, popmort2$rate, col = "blue", type = "l", lty="longdash",
-     xlim=c(0,100), ylim=c(0,0.30))
+     xlim=c(0,100), ylim=c(0,0.50))
 
 ## Merge the expected hazard with the original data
 plotdataRFC_m2_fpm_rel <- merge(plotdataRFC_m2_fpm_rel, popmort2, by=c("t_floor"))
@@ -204,7 +204,7 @@ plotdataFC_m2_fpm_rel <- plotdataFC_m2_fpm_rel %>%
 ## Plot all the all-cause hazards predicted in either an all-cause survival framework or
 ## a relative survival framework 
 plot(plotdataRFC_m2_fpm_ac$Tstop, plotdataRFC_m2_fpm_ac$haz, col = "blue", type = "l", lty="solid",
-     xlim=c(0,30), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,50), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m2_fpm_ac$Tstop, plotdataFC_m2_fpm_ac$haz, col = "red", type = "l", lty="solid")
 lines(plotdataRFC_m2_fpm_rel$Tstop, plotdataRFC_m2_fpm_rel$achaz, col = "blue", type = "l", lty="longdash")  
 lines(plotdataFC_m2_fpm_rel$Tstop, plotdataFC_m2_fpm_rel$achaz, col = "red", type = "l", lty="longdash")  
@@ -228,10 +228,10 @@ max(msmcancer3$time)
 ##############################################
 ## Make a dataset for plotting later
 ## Caution: semi-Markov--time variable is "time"
-plotdataRFC_m3_fpm_ac = expand.grid(treat = 1, time=seq(0, 30, length.out = 180))
+plotdataRFC_m3_fpm_ac = expand.grid(treat = 1, time=seq(0, 50, length.out = 360))
 plotdataRFC_m3_fpm_ac$Tstop <- plotdataRFC_m3_fpm_ac$time
 
-plotdataFC_m3_fpm_ac = expand.grid(treat = 0, time=seq(0, 30, length.out = 180))
+plotdataFC_m3_fpm_ac = expand.grid(treat = 0, time=seq(0, 50, length.out = 360))
 plotdataFC_m3_fpm_ac$Tstop <- plotdataFC_m3_fpm_ac$time
 
 ## Build models
@@ -277,11 +277,11 @@ plotdataFC_m3_fpm_ac <- plotdataFC_m3_fpm_ac[plotdataFC_m3_fpm_ac$time>0,]
 ##############################################
 ## Make a dataset for plotting later
 ## Caution: semi-Markov--time variable is "time"
-plotdataRFC_m3_fpm_rel = expand.grid(treat = 1, time=seq(0, 30, length.out = 180))
+plotdataRFC_m3_fpm_rel = expand.grid(treat = 1, time=seq(0, 50, length.out = 360))
 plotdataRFC_m3_fpm_rel$Tstop <- plotdataRFC_m3_fpm_rel$time
 plotdataRFC_m3_fpm_rel$t_floor <- floor(plotdataRFC_m3_fpm_rel$time)
 
-plotdataFC_m3_fpm_rel = expand.grid(treat = 0, time=seq(0, 30, length.out = 180))
+plotdataFC_m3_fpm_rel = expand.grid(treat = 0, time=seq(0, 50, length.out = 360))
 plotdataFC_m3_fpm_rel$Tstop <- plotdataFC_m3_fpm_rel$time
 plotdataFC_m3_fpm_rel$t_floor <- floor(plotdataFC_m3_fpm_rel$time)
 
@@ -337,7 +337,7 @@ plotdataFC_m3_fpm_rel <- plotdataFC_m3_fpm_rel[plotdataFC_m3_fpm_rel$time>0,]
 ## Plot all the all-cause hazards predicted in either an all-cause survival framework or
 ## a relative survival framework 
 plot(plotdataRFC_m3_fpm_ac$time, plotdataRFC_m3_fpm_ac$haz_semiMarkov, col = "blue", type = "l", lty="solid",
-     xlim=c(0,30), ylim=c(0,1), xlab = "Time since progression (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,50), ylim=c(0,1), xlab = "Time since progression (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m3_fpm_ac$time, plotdataFC_m3_fpm_ac$haz_semiMarkov, col = "red", type = "l", lty="solid")
 lines(plotdataRFC_m3_fpm_rel$time, plotdataRFC_m3_fpm_rel$achaz_semiMarkov, col = "blue", type = "l", lty="longdash")  
 lines(plotdataFC_m3_fpm_rel$time, plotdataFC_m3_fpm_rel$achaz_semiMarkov, col = "red", type = "l", lty="longdash")  

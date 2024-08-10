@@ -42,15 +42,12 @@ source("03b_compare_hazard.R")   # Compare the extrapolated hazard functions
 ## Compare survival extrapolations
 ##============================================================
 ##############################################################
-source("04a1_Markov_fpm_ac_microsim.R")           # Markov (clock-forward) model using flexible parametric models within an all-cause survival framework (microsimulation package)
-source("04a1_Markov_fpm_ac_mstate.R")             # Markov (clock-forward) model using flexible parametric models within an all-cause survival framework (mstate package)
-source("04a2_Markov_fpm_rel_microsim.R")          # Markov (clock-forward) model using flexible parametric models within a relative survival framework (microsimulation package)
-source("04a3_Markov_williams_ac_microsim.R")      # Markov (clock-forward) model using standard parametric models within an all-cause survival framework (microsimulation package)
-source("04a5_semiMarkov_fpm_ac_microsim.R")       # semi-Markov (clock-reset) model using flexible parametric models within an all-cause survival framework (microsimulation package)
-source("04a6_semiMarkov_fpm_rel_hesim.R")         # Proposed method: semi-Markov (clock-reset) model using flexible parametric models within a relative survival framework (hesim package)
-source("04a6_semiMarkov_fpm_rel_microsim.R")      # Proposed method: semi-Markov (clock-reset) model using flexible parametric models within a relative survival framework (microsimulation package)
-source("04a7_semiMarkov_williams_ac_microsim.R")  # semi-Markov (clock-reset) model using standard parametric models within an all-cause survival framework (microsimulation package)
-source("04a7_semiMarkov_williams_ac_mstate.R")    # Williams et al. 2017: semi-Markov (clock-reset) model using standard parametric models within an all-cause survival framework (mstate package)
+
+source("04a1_semiMarkov_fpm_ac_microsim.R")       # semi-Markov (clock-reset) model using flexible parametric models within an all-cause survival framework (microsimulation package)
+source("04a2_semiMarkov_fpm_rel_hesim.R")         # Proposed method: semi-Markov (clock-reset) model using flexible parametric models within a relative survival framework (hesim package)
+source("04a2_semiMarkov_fpm_rel_microsim.R")      # Proposed method: semi-Markov (clock-reset) model using flexible parametric models within a relative survival framework (microsimulation package)
+source("04a3_semiMarkov_williams_ac_microsim.R")  # semi-Markov (clock-reset) model using standard parametric models within an all-cause survival framework (microsimulation package)
+source("04a3_semiMarkov_williams_ac_mstate.R")    # Williams et al. 2017: semi-Markov (clock-reset) model using standard parametric models within an all-cause survival framework (mstate package)
 source("04b_table_survextrap.R")                  # Tabulate the observed and the extrapolated survival
 source("04c_figure_survextrap.R")                 # Plot the observed and the extrapolated survival
 

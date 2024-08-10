@@ -1,4 +1,4 @@
-## Filename: 04a6_semiMarkov_fpm_rel_hesim
+## Filename: 04a2_semiMarkov_fpm_rel_hesim
 ## Purpose: Run semi-Markov (clock-reset) model using hesim package with
 ##          flexible parametric models within a relative survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+

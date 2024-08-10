@@ -38,8 +38,6 @@ hallek2010$death_ty <- hallek2010$death_t/12
 mfit1 <- survfit(Surv(death_ty, death==1) ~ treat, data = hallek2010)
 summary(mfit1)
 
-hallek_FC_4yr_surv <- summary(mfit1, times=4)$surv[1]
-hallek_RFC_4yr_surv <- summary(mfit1, times=4)$surv[2]
 mfit1 <- survfit(Surv(progdeath_ty, progdeath==1) ~ treat, data = hallek2010)
 summary(mfit1)
 
@@ -90,7 +88,7 @@ fischer_RFC_8yr_prog <-  fischer_RFC_8yr_surv - fischer_RFC_8yr_pfs
 ## Semi-Markov with standard parametric models, all-cause survival framework (Williams 2017) ##
 ###############################################################################################
 ## Use the data for extrapolation until lifetime instead
-williams2017 <- read.table("../Data/04a7_semiMarkov_williams_ac_mstate.txt", header = TRUE)
+williams2017 <- read.table("../Data/04a3_semiMarkov_williams_ac_mstate.txt", header = TRUE)
 colnames(williams2017)
 
 williams_FC_4yr_surv <- subset(williams2017, treat == 0 & time == 4)$surv
@@ -130,8 +128,8 @@ williams_RFC_lifetime_surv_Prog <- 0
 ###############################################################################
 ## This is to show the results are identical to Williams 2017 .
 ## Read the results
-semiMarkov_williams_ac_FC <- readRDS("../Data/04a7_semiMarkov_williams_ac_microsim_FC.rds")
-semiMarkov_williams_ac_RFC <- readRDS("../Data/04a7_semiMarkov_williams_ac_microsim_RFC.rds")
+semiMarkov_williams_ac_FC <- readRDS("../Data/04a3_semiMarkov_williams_ac_microsim_FC.rds")
+semiMarkov_williams_ac_RFC <- readRDS("../Data/04a3_semiMarkov_williams_ac_microsim_RFC.rds")
 
 ## Obtain survival at times 4, 8, 15, and 50 years/lifetime
 prev_FC <- as.data.frame(semiMarkov_williams_ac_FC$prev)
@@ -180,8 +178,8 @@ semiMarkov_williams_ac_RFC_lifetime_surv_Prog <- 0
 ## Semi-Markov with flexible parametric models, all-cause survival framework ##
 ###############################################################################
 ## Read the results
-semiMarkov_fpm_ac_FC <- readRDS("../Data/04a5_semiMarkov_fpm_ac_microsim_FC.rds")
-semiMarkov_fpm_ac_RFC <- readRDS("../Data/04a5_semiMarkov_fpm_ac_microsim_RFC.rds")
+semiMarkov_fpm_ac_FC <- readRDS("../Data/04a1_semiMarkov_fpm_ac_microsim_FC.rds")
+semiMarkov_fpm_ac_RFC <- readRDS("../Data/04a1_semiMarkov_fpm_ac_microsim_RFC.rds")
 
 ## Obtain survival at times 4, 8, 15, and 50 years/lifetime
 prev_FC <- as.data.frame(semiMarkov_fpm_ac_FC$prev)
@@ -240,8 +238,8 @@ semiMarkov_fpm_ac_RFC_lifetime_surv_Prog <- semiMarkov_fpm_ac_RFC_50yr_surv_Prog
 ## Semi-Markov with flexible parametric models, relative survival framework ##
 ###################################################################################
 ## Read the results
-semiMarkov_fpm_rel_FC <- readRDS("../Data/04a6_semiMarkov_fpm_rel_microsim_FC.rds")
-semiMarkov_fpm_rel_RFC <- readRDS("../Data/04a6_semiMarkov_fpm_rel_microsim_RFC.rds")
+semiMarkov_fpm_rel_FC <- readRDS("../Data/04a2_semiMarkov_fpm_rel_microsim_FC.rds")
+semiMarkov_fpm_rel_RFC <- readRDS("../Data/04a2_semiMarkov_fpm_rel_microsim_RFC.rds")
 
 ## Obtain survival at times 4, 8, 15, and 50 years/lifetime
 prev_FC <- as.data.frame(semiMarkov_fpm_rel_FC$prev)
@@ -691,11 +689,11 @@ var_matrix <- matrix(
     NA,NA, "SPMs, ASF (Williams et al.)", var_list$`williams_FC_ 4 yr`, var_list$`williams_FC_ 8 yr`, var_list$`williams_FC_ 15 yr`,  var_list$`williams_FC_ 19 yr`, surv_list$williams_FC_4yr_surv, surv_list$williams_FC_8yr_surv, surv_list$williams_FC_15yr_surv,  surv_list$williams_FC_lifetime_surv,
     NA,NA, "FPMs, ASF", var_list$`semiMarkov_fpm_ac_FC 4 yr`, var_list$`semiMarkov_fpm_ac_FC 8 yr`, var_list$`semiMarkov_fpm_ac_FC 15 yr`, var_list$`semiMarkov_fpm_ac_FC 50 yr`, surv_list$semiMarkov_fpm_ac_FC_4yr_surv, surv_list$semiMarkov_fpm_ac_FC_8yr_surv, surv_list$semiMarkov_fpm_ac_FC_15yr_surv, surv_list$semiMarkov_fpm_ac_FC_lifetime_surv,
     NA,NA, "FPMs, RSF (Proposed method)", var_list$`semiMarkov_fpm_rel_FC 4 yr`, var_list$`semiMarkov_fpm_rel_FC 8 yr`, var_list$`semiMarkov_fpm_rel_FC 15 yr`, var_list$`semiMarkov_fpm_rel_FC 50 yr`, surv_list$semiMarkov_fpm_rel_FC_4yr_surv, surv_list$semiMarkov_fpm_rel_FC_8yr_surv, surv_list$semiMarkov_fpm_rel_FC_15yr_surv, surv_list$semiMarkov_fpm_rel_FC_lifetime_surv,
-    NA, "PFS", "Observed", var_list$fischer_FC_4yr_pfs, var_list$fischer_FC_8yr_pfs, NA, NA, surv_list$fischer_FC_4yr_pfs, surv_list$fischer_FC_8yr_pfs, NA, NA,
+    NA, "Progression-free", "Observed", var_list$fischer_FC_4yr_pfs, var_list$fischer_FC_8yr_pfs, NA, NA, surv_list$fischer_FC_4yr_pfs, surv_list$fischer_FC_8yr_pfs, NA, NA,
     NA,NA, "SPMs, ASF", var_list$`williams_FC_ 4 yr _pfs`, var_list$`williams_FC_ 8 yr _pfs`, var_list$`williams_FC_ 15 yr _pfs`,  var_list$`williams_FC_ 19 yr _pfs`, surv_list$williams_FC_4yr_surv_PFS, surv_list$williams_FC_8yr_surv_PFS, surv_list$williams_FC_15yr_surv_PFS,  surv_list$williams_FC_lifetime_surv_PFS,
     NA,NA, "FPMs, ASF", var_list$`semiMarkov_fpm_ac_FC 4 yr _pfs`, var_list$`semiMarkov_fpm_ac_FC 8 yr _pfs`, var_list$`semiMarkov_fpm_ac_FC 15 yr _pfs`, var_list$`semiMarkov_fpm_ac_FC 50 yr _pfs`, surv_list$semiMarkov_fpm_ac_FC_4yr_surv_PFS, surv_list$semiMarkov_fpm_ac_FC_8yr_surv_PFS, surv_list$semiMarkov_fpm_ac_FC_15yr_surv_PFS, surv_list$semiMarkov_fpm_ac_FC_lifetime_surv_PFS,
     NA,NA, "FPMs, RSF", var_list$`semiMarkov_fpm_rel_FC 4 yr _pfs`, var_list$`semiMarkov_fpm_rel_FC 8 yr _pfs`, var_list$`semiMarkov_fpm_rel_FC 15 yr _pfs`, var_list$`semiMarkov_fpm_rel_FC 50 yr _pfs`, surv_list$semiMarkov_fpm_rel_FC_4yr_surv_PFS, surv_list$semiMarkov_fpm_rel_FC_8yr_surv_PFS, surv_list$semiMarkov_fpm_rel_FC_15yr_surv_PFS, surv_list$semiMarkov_fpm_rel_FC_lifetime_surv_PFS,
-    NA,"PPS", "Observed", var_list$fischer_FC_4yr_prog, var_list$fischer_FC_8yr_prog, NA, NA,  surv_list$fischer_FC_4yr_prog,  surv_list$fischer_FC_4yr_prog, NA, NA,
+    NA,"Progression", "Observed", var_list$fischer_FC_4yr_prog, var_list$fischer_FC_8yr_prog, NA, NA,  surv_list$fischer_FC_4yr_prog,  surv_list$fischer_FC_4yr_prog, NA, NA,
     NA,NA, "SPMs, ASF", var_list$`williams_FC_ 4 yr _prog`, var_list$`williams_FC_ 8 yr _prog`, var_list$`williams_FC_ 15 yr _prog`,  var_list$`williams_FC_ 19 yr _prog`, surv_list$williams_FC_4yr_surv_Prog, surv_list$williams_FC_8yr_surv_Prog, surv_list$williams_FC_15yr_surv_Prog, surv_list$williams_FC_lifetime_surv_Prog,
     NA,NA, "FPMs, ASF", var_list$`semiMarkov_fpm_ac_FC 4 yr _prog`, var_list$`semiMarkov_fpm_ac_FC 8 yr _prog`, var_list$`semiMarkov_fpm_ac_FC 15 yr _prog`, var_list$`semiMarkov_fpm_ac_FC 50 yr _prog`,surv_list$semiMarkov_fpm_ac_FC_4yr_surv_Prog, surv_list$semiMarkov_fpm_ac_FC_8yr_surv_Prog, surv_list$semiMarkov_fpm_ac_FC_15yr_surv_Prog, surv_list$semiMarkov_fpm_ac_FC_lifetime_surv_Prog,
     NA,NA, "FPMs, RSF", var_list$`semiMarkov_fpm_rel_FC 4 yr _prog`, var_list$`semiMarkov_fpm_rel_FC 8 yr _prog`, var_list$`semiMarkov_fpm_rel_FC 15 yr _prog`, var_list$`semiMarkov_fpm_rel_FC 50 yr _prog`, surv_list$semiMarkov_fpm_rel_FC_4yr_surv_Prog, surv_list$semiMarkov_fpm_rel_FC_8yr_surv_Prog, surv_list$semiMarkov_fpm_rel_FC_15yr_surv_Prog, surv_list$semiMarkov_fpm_rel_FC_lifetime_surv_Prog,
@@ -703,11 +701,11 @@ var_matrix <- matrix(
     NA,NA, "SPMs, ASF", var_list$`williams_RFC_ 4 yr`, var_list$`williams_RFC_ 8 yr`, var_list$`williams_RFC_ 15 yr`,  var_list$`williams_RFC_ 19 yr`, surv_list$williams_RFC_4yr_surv, surv_list$williams_RFC_8yr_surv, surv_list$williams_RFC_15yr_surv,  surv_list$williams_RFC_lifetime_surv,
     NA,NA, "FPMs, ASF", var_list$`semiMarkov_fpm_ac_RFC 4 yr`, var_list$`semiMarkov_fpm_ac_RFC 8 yr`, var_list$`semiMarkov_fpm_ac_RFC 15 yr`, var_list$`semiMarkov_fpm_ac_RFC 50 yr`, surv_list$semiMarkov_fpm_ac_RFC_4yr_surv, surv_list$semiMarkov_fpm_ac_RFC_8yr_surv, surv_list$semiMarkov_fpm_ac_RFC_15yr_surv, surv_list$semiMarkov_fpm_ac_RFC_lifetime_surv,
     NA,NA, "FPMs, RSF", var_list$`semiMarkov_fpm_rel_RFC 4 yr`, var_list$`semiMarkov_fpm_rel_RFC 8 yr`, var_list$`semiMarkov_fpm_rel_RFC 15 yr`, var_list$`semiMarkov_fpm_rel_RFC 50 yr`, surv_list$semiMarkov_fpm_rel_RFC_4yr_surv, surv_list$semiMarkov_fpm_rel_RFC_8yr_surv, surv_list$semiMarkov_fpm_rel_RFC_15yr_surv, surv_list$semiMarkov_fpm_rel_RFC_lifetime_surv,
-    NA,"PFS", "Observed", var_list$fischer_RFC_4yr_pfs, var_list$fischer_RFC_8yr_pfs, NA, NA, surv_list$fischer_RFC_4yr_pfs, surv_list$fischer_RFC_8yr_pfs, NA, NA,
+    NA,"Progression-free", "Observed", var_list$fischer_RFC_4yr_pfs, var_list$fischer_RFC_8yr_pfs, NA, NA, surv_list$fischer_RFC_4yr_pfs, surv_list$fischer_RFC_8yr_pfs, NA, NA,
     NA,NA, "SPMs, ASF", var_list$`williams_RFC_ 4 yr _pfs`, var_list$`williams_RFC_ 8 yr _pfs`, var_list$`williams_RFC_ 15 yr _pfs`,  var_list$`williams_RFC_ 19 yr _pfs`, surv_list$williams_RFC_4yr_surv_PFS, surv_list$williams_RFC_8yr_surv_PFS, surv_list$williams_RFC_15yr_surv_PFS,  surv_list$williams_RFC_lifetime_surv_PFS,
     NA,NA, "FPMs, ASF", var_list$`semiMarkov_fpm_ac_RFC 4 yr _pfs`, var_list$`semiMarkov_fpm_ac_RFC 8 yr _pfs`, var_list$`semiMarkov_fpm_ac_RFC 15 yr _pfs`, var_list$`semiMarkov_fpm_ac_RFC 50 yr _pfs`, surv_list$semiMarkov_fpm_ac_RFC_4yr_surv_PFS, surv_list$semiMarkov_fpm_ac_RFC_8yr_surv_PFS, surv_list$semiMarkov_fpm_ac_RFC_15yr_surv_PFS, surv_list$semiMarkov_fpm_ac_RFC_lifetime_surv_PFS,
     NA,NA, "FPMs, RSF", var_list$`semiMarkov_fpm_rel_RFC 4 yr _pfs`, var_list$`semiMarkov_fpm_rel_RFC 8 yr _pfs`, var_list$`semiMarkov_fpm_rel_RFC 15 yr _pfs`, var_list$`semiMarkov_fpm_rel_RFC 50 yr _pfs`, surv_list$semiMarkov_fpm_rel_RFC_4yr_surv_PFS, surv_list$semiMarkov_fpm_rel_RFC_8yr_surv_PFS, surv_list$semiMarkov_fpm_rel_RFC_15yr_surv_PFS, surv_list$semiMarkov_fpm_rel_RFC_lifetime_surv_PFS,
-    NA,"PPS", "Observed", var_list$fischer_RFC_4yr_prog, var_list$fischer_RFC_8yr_prog, NA, NA, surv_list$fischer_RFC_4yr_prog,  surv_list$fischer_RFC_4yr_prog, NA, NA,
+    NA,"Progression", "Observed", var_list$fischer_RFC_4yr_prog, var_list$fischer_RFC_8yr_prog, NA, NA, surv_list$fischer_RFC_4yr_prog,  surv_list$fischer_RFC_4yr_prog, NA, NA,
     NA,NA, "SPMs, ASF", var_list$`williams_RFC_ 4 yr _prog`, var_list$`williams_RFC_ 8 yr _prog`, var_list$`williams_RFC_ 15 yr _prog`,  var_list$`williams_RFC_ 19 yr _prog`, surv_list$williams_RFC_4yr_surv_Prog, surv_list$williams_RFC_8yr_surv_Prog, surv_list$williams_RFC_15yr_surv_Prog, surv_list$williams_RFC_lifetime_surv_Prog,
     NA,NA, "FPMs, ASF", var_list$`semiMarkov_fpm_ac_RFC 4 yr _prog`, var_list$`semiMarkov_fpm_ac_RFC 8 yr _prog`, var_list$`semiMarkov_fpm_ac_RFC 15 yr _prog`, var_list$`semiMarkov_fpm_ac_RFC 50 yr _prog`,surv_list$semiMarkov_fpm_ac_RFC_4yr_surv_Prog, surv_list$semiMarkov_fpm_ac_RFC_8yr_surv_Prog, surv_list$semiMarkov_fpm_ac_RFC_15yr_surv_Prog, surv_list$semiMarkov_fpm_ac_RFC_lifetime_surv_Prog,
     NA,NA, "FPMs, RSF", var_list$`semiMarkov_fpm_rel_RFC 4 yr _prog`, var_list$`semiMarkov_fpm_rel_RFC 8 yr _prog`, var_list$`semiMarkov_fpm_rel_RFC 15 yr _prog`, var_list$`semiMarkov_fpm_rel_RFC 50 yr _prog`, surv_list$semiMarkov_fpm_rel_RFC_4yr_surv_Prog, surv_list$semiMarkov_fpm_rel_RFC_8yr_surv_Prog, surv_list$semiMarkov_fpm_rel_RFC_15yr_surv_Prog, surv_list$semiMarkov_fpm_rel_RFC_lifetime_surv_Prog)
@@ -724,10 +722,10 @@ print(df)
 ## Make a flextable and export it as docx 
 ft <- flextable(df)  
 ft <- autofit(ft)
-ft <- set_header_labels(ft, V1 = "Treatment", V2 = "Outcome", V3 = "Source", 
+ft <- set_header_labels(ft, V1 = "Treatment", V2 = "State", V3 = "Source", 
                             V4 = "4", V5 = "8", V6 = "15", V7 = "50*",
                             V8 = "4", V9 = "8", V10 = "15", V11 = "50*")
-ft <- add_header_row(ft, values = c("","RMST at times (years)", "Survival proportions at times (years)"),
+ft <- add_header_row(ft, values = c("","Lengths of stay in years at times (years)", "Survival proportions at times (years)"),
                      colwidths = c(3, 4, 4))
 
 ft <- align(ft, align = c("right"), i = 1, j = NULL, part = "header")
@@ -737,13 +735,13 @@ ft <- align(ft, align = c("right"), i = 1:24, j = 4:11, part = "body")
 
 ft <- bold(ft, i = c(1,5,9,13,17,21), j = 1:11, bold = TRUE, part = "body")
 
-ft <- add_footer_lines(ft,"*If survival proportion at 50 years is zero, the reported 50-year RMST can be regarded as life expectancy. RMST, restricted mean survival time; LE, life expectancy; FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; SPMs, standard parametric models; FPMs, flexible parametric models; ASF, all-cause survival framework; RSF, relative survival framework; OS, overall survival; PFS, progression-free survival; PPS, post-progression survival.")
+ft <- add_footer_lines(ft,"LE, life expectancy; FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; SPMs, standard parametric models; FPMs, flexible parametric models; ASF, all-cause survival framework; RSF, relative survival framework; OS, overall survival.")
 ft <- autofit(ft)
 ft
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-save_as_docx(ft, path="../Output/04b_table_survextrap.docx")
+# save_as_docx(ft, path="../Output/04b_table_survextrap.docx")
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

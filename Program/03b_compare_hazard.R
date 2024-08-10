@@ -52,12 +52,12 @@ trans1_RFC <- ggplot() +
               geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
-              scale_y_continuous(breaks = seq(0, 2, by = 0.5), limits = c(0, 2), 
-                                 labels = seq(0, 2, by = 0.5)) +
+              scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
+                                 labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
+              scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5), 
+                                 labels = seq(0, 2.5, by = 0.5)) +
               labs(x = "Time since study entry  (years)", y = "Hazard", title = "RFC") +
-              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
+              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen4", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                                  name = "") +
               scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
@@ -91,13 +91,13 @@ trans1_FC <- ggplot() +
               geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
-              scale_y_continuous(breaks = seq(0, 2, by = 0.5), limits = c(0, 2), 
-                                 labels = seq(0, 2, by = 0.5)) +
+              scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
+                                 labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
+              scale_y_continuous(breaks = seq(0, 2.5, by = 0.5), limits = c(0, 2.5), 
+                                 labels = seq(0, 2.5, by = 0.5)) +
               labs(x = "Time since study entry  (years)", y = "Hazard",
                    title = "FC") +
-              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
+              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen4", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                                  name = "") +
               scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
@@ -148,10 +148,10 @@ trans2_RFC <- ggplot() +
               geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
-              scale_y_continuous(breaks = seq(0, 0.1, by = 0.02), limits = c(0, 0.1), 
-                     labels = seq(0, 0.1, by = 0.02)) +
+              scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
+                                 labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
+              scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
+                                 labels = seq(0, 0.5, by = 0.1)) +
               labs(x = "Time since study entry  (years)", y = "Hazard", title = "RFC") +
               scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
@@ -184,10 +184,10 @@ trans2_FC <- ggplot() +
               geom_line(data=plotdataFC_haz, aes(x=time, y=haz, color = "lt1", linetype = "lt1"), linewidth = 1.5, alpha = 0.8) +                geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
-              scale_y_continuous(breaks = seq(0, 0.1, by = 0.02), limits = c(0, 0.1), 
-                                 labels = seq(0, 0.1, by = 0.02)) +
+              scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
+                                 labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
+              scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
+                                 labels = seq(0, 0.5, by = 0.1)) +
               labs(x = "Time since study entry  (years)", y = "Hazard", title = "FC") +
               scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Generalized gamma"),
@@ -243,12 +243,12 @@ trans3_RFC <- ggplot() +
               geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
+              scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
+                                 labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
               scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
                                  labels = seq(0, 0.5, by = 0.1)) +
               labs(x = "Time since progression (years)", y = "Hazard", title = "RFC") +
-              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange")[c(1,4,2,5,3)],
+              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen4", "lt5" = "darkorange")[c(1,4,2,5,3)],
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                                  name = "") +
               scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
@@ -281,12 +281,12 @@ trans3_FC <- ggplot() +
               geom_vline(xintercept = 4, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 8, linetype = "dotted", color = "darkgray") +  
               geom_vline(xintercept = 15, linetype = "dotted", color = "darkgray") +
-              scale_x_continuous(breaks = seq(0, 30, by = 5), limits = c(0, 30),
-                                 labels = seq(0, 30, by = 5), minor_breaks = seq(0, 30, by = 1)) +
+              scale_x_continuous(breaks = seq(0, 50, by = 5), limits = c(0, 50),
+                                 labels = seq(0, 50, by = 5), minor_breaks = seq(0, 50, by = 1)) +
               scale_y_continuous(breaks = seq(0, 0.5, by = 0.1), limits = c(0, 0.5), 
                                  labels = seq(0, 0.5, by = 0.1)) +
               labs(x = "Time since progression (years)", y = "Hazard", title = "FC") +
-              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen3", "lt5" = "darkorange"),
+              scale_color_manual(values = c("lt1" = "black", "lt2" = "blue", "lt3" = "cyan", "lt4" = "darkolivegreen4", "lt5" = "darkorange"),
                                  labels = c("Observed", "FPM (ASF)", "FPM (RSF)", "Gompertz", "Generalized gamma"),
                                  name = "") +
               scale_linetype_manual(values = c("lt1" = "solid", "lt2" = "dashed", "lt3" = "twodash", "lt4" = "dotdash", "lt5" = "longdash"), 
@@ -317,15 +317,16 @@ plot3
 ################################################################
 ## Combine all plots together
 ################################################################
-plot <- ggarrange(plot1, plot2, plot3,
-                  ncol = 1, nrow = 3,
-                  widths = c(0.05, 0.05, 0.05),
+plot <- ggarrange(plot1, NA, plot2, NA, plot3,
+                  ncol = 1, nrow = 5,
+                  widths = c(0.05, 0.05, 0.05, 0.05, 0.05),
+                  heights = c(1.5, 0.1, 1.5, 0.1, 1.7),
                   common.legend = TRUE, legend="bottom")
 plot
 
-## Prevent from changing the results. We put # here.
-#ggsave(filename = "../Output/03b_compare_hazard.png", plot, bg = "white",
-#       width = 12, height = 16, dpi = 300)
+## Prevent from changing the results. We put # here. 
+ggsave(filename = "../Output/03b_compare_hazard.png", plot, bg = "white",
+       width = 12, height = 16, dpi = 300)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

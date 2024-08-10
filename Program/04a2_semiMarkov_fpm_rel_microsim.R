@@ -1,4 +1,4 @@
-## Filename: 04a6_semiMarkov_fpm_rel_microsim
+## Filename: 04a2_semiMarkov_fpm_rel_microsim
 ## Purpose: Run semi-Markov (clock-reset) model using microsimulation package with
 ##          flexible parametric models within a relative survival framework
 ## Notes: Must have installed the lastest Rtools and R4.2.2+
@@ -223,8 +223,8 @@ results_RFC <- results[[2]]
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# saveRDS(results_FC, file = "../Data/04a6_semiMarkov_fpm_rel_microsim_FC.rds")
-# saveRDS(results_RFC, file = "../Data/04a6_semiMarkov_fpm_rel_microsim_RFC.rds")
+# saveRDS(results_FC, file = "../Data/04a2_semiMarkov_fpm_rel_microsim_FC.rds")
+# saveRDS(results_RFC, file = "../Data/04a2_semiMarkov_fpm_rel_microsim_RFC.rds")
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

@@ -27,8 +27,8 @@ source("02_msmcancer.R")
 ## Make datasets for plotting later
 ##============================================================
 ##############################################################
-plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 30, length.out = 360))
-plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 30, length.out = 360))
+plotdataRFC_empty = expand.grid(treat = 1, Tstop=seq(0, 50, length.out = 360))
+plotdataFC_empty = expand.grid(treat = 0, Tstop=seq(0, 50, length.out = 360))
 
 ##############################################################
 ##============================================================
@@ -58,7 +58,7 @@ plotdataFC_m1_w <- cbind(plotdataFC_m1_w, haz_m1_gom)
 
 ## Plot the hazards
 plot(plotdataRFC_m1_w$Tstop, plotdataRFC_m1_w$haz_m1_gom, col = "blue", type = "l", lty="solid",
-     xlim=c(0,30), ylim=c(0,15), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,50), ylim=c(0,15), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m1_w$Tstop, plotdataFC_m1_w$haz_m1_gom, col = "red", type = "l", lty="solid")
 legend(0.2, 300, c("Gompertz (RFC)", "Gompertz (FC)"), bty="n", 
        lty=c("solid", "solid"), 
@@ -98,7 +98,7 @@ plotdataFC_m2_w <- cbind(plotdataFC_m2_w, haz_m2_gam)
 
 ## Plot the hazards
 plot(plotdataRFC_m2_w$Tstop, plotdataRFC_m2_w$haz_m2_gam, col = "blue", type = "l", lty="solid",
-     xlim=c(0,30), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,50), ylim=c(0,0.1), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m2_w$Tstop, plotdataFC_m2_w$haz_m2_gam, col = "red", type = "l", lty="solid")
 legend(0.1, 0.1, c("Ggamma (RFC)", "Ggamma (FC)"), bty="n", 
        lty=c("solid", "solid"), 
@@ -112,9 +112,9 @@ title(main="Progression-free -> death", cex.main=1)
 ################################################################
 ## Make a dataset for plotting later
 ## Caution: semi-Markov--time variable is "time"
-plotdataRFC_empty = expand.grid(treat = 1, time=seq(0, 30, length.out = 360))
+plotdataRFC_empty = expand.grid(treat = 1, time=seq(0, 50, length.out = 360))
 plotdataRFC_empty$Tstop <- plotdataRFC_empty$time
-plotdataFC_empty = expand.grid(treat = 0, time=seq(0, 30, length.out = 360))
+plotdataFC_empty = expand.grid(treat = 0, time=seq(0, 50, length.out = 360))
 plotdataFC_empty$Tstop <- plotdataFC_empty$time
 
 ## Make empty datasets for predictions later
@@ -139,7 +139,7 @@ plotdataFC_m3_w$haz_m3_gom_semiMarkov <- predict(m3_semiMarkov_gom, newdata = pl
 ## Plot the hazards
 ## Semi-Markov as an example
 plot(plotdataRFC_m3_w$time, plotdataRFC_m3_w$haz_m3_gom_semiMarkov, col = "blue", type = "l", lty="solid",
-     xlim=c(0,30), ylim=c(0.0,0.3), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
+     xlim=c(0,50), ylim=c(0.0,0.3), xlab = "Time since study (years)", ylab = "Hazard rate (events/person-year)")
 lines(plotdataFC_m3_w$time, plotdataFC_m3_w$haz_m3_gom_semiMarkov, col = "red", type = "l", lty="solid")
 legend(5, 0.05, c("Gompertz (RFC)", "Gompertz (FC)"), bty="n", 
        lty=c("solid", "solid"), 

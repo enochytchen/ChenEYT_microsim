@@ -17,6 +17,7 @@ library(rstpm2)
 library(microsimulation)
 library(Rcpp)
 library(flextable)
+library(dplyr)
 
 ##############################################################
 ##============================================================

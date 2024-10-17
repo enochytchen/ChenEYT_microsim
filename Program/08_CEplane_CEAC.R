@@ -4,7 +4,6 @@
 ##          Relative survival framework
 ## Caution: Must have installed the lastest Rtools and R4.2.2+
 ## Reference: Williams C, Lewsey JD, Briggs AH, Mackay DF. 
-##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. 
 ##            Med Decis Making. 2017 May;37(4):340–52.
 ##            Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial © 2017 by Williams C. et al is licensed under CC BY 3.0. 
 
@@ -25,7 +24,7 @@ library(pracma)
 ##============================================================
 ##############################################################
 ## Read data
-load("../Data/07_fullmod_PSA.RData")
+load("../Output/07_fullmod_fpm_rel_PSA.RData")
 PSA_results <- output_df
 
 ##############################################################
@@ -49,7 +48,7 @@ plot
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# ggsave("../Output/08_CEplane_microsim.png", plot, width = 10, height = 7, units = "in", dpi = 300)
+## ggsave("../Output/08_CEplane_fpm_rel_PSA.png", plot, width = 10, height = 7, units = "in", dpi = 300)
 
 ##############################################################
 ##============================================================
@@ -109,7 +108,7 @@ plot
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# ggsave("../Output/08_rel_CEAC_microsim.png", plot, width = 10, height = 7, units = "in", dpi = 300)
+## ggsave("../Output/08_CEAC_fpm_rel_PSA.png", plot, width = 10, height = 7, units = "in", dpi = 300)
 
 ##############################################################
 ##============================================================
@@ -361,12 +360,13 @@ plot1
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# ggsave("../Output/08_rel_CEplane_comparison.png", plot1, width = 10, height = 7, units = "in", dpi = 300)
+ggsave("../Output/08_CEplane_comparison.png", plot1, width = 10, height = 7, units = "in", dpi = 300)
       
 ### Plot of cost-effectiveness acceptability curves 
 plot2 <- ggplot()+
               geom_line(data = CEAC_Data, aes(x = Threshold, y = Prob_CE, color = "FPMs, RSF (Proposed method)"), linewidth = 2.0) +
               geom_line(data = williams2017_PSA_CEAC, aes(x = Threshold, y = Prob_CE_williams, color = "SPMs, ASF (Williams et al.)"), linewidth = 2.0) +
+              geom_vline(xintercept = 30000, linetype = "dashed", color = "gray", linewidth = 1.0) + 
               scale_x_continuous(breaks = seq(0, 100000, 20000), limits = c(0, 100000), 
                                  expand = c(0.05, 0.05), labels = scales::comma) +
               scale_color_manual(values = c("FPMs, RSF (Proposed method)" = "gold", "SPMs, ASF (Williams et al.)" = "royalblue2")) +
@@ -396,7 +396,7 @@ plot2
 
 ## Save results
 ## Prevent from changing the results. We put # here.      
-# ggsave("../Output/08_rel_CEAC_comparison.png", plot2, width = 10, height = 7, units = "in", dpi = 300)
+## ggsave("../Output/08_rel_CEAC_comparison.png", plot2, width = 10, height = 7, units = "in", dpi = 300)
 
 ## Plot two figures together
 plot <- ggarrange(plot1, plot2, ncol = 2,
@@ -406,7 +406,7 @@ plot
 
 ## Save results
 ## Prevent from changing the results. We put # here.
-# # ggsave("../Output/08_rel_CEplane_CEAC.png", plot, width = 10, height = 7, units = "in", dpi = 300)
+# ggsave("../Output/08_CEplane_CEAC.png", plot, width = 10, height = 7, units = "in", dpi = 1000)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

@@ -325,8 +325,8 @@ plot <- ggarrange(plot1, NA, plot2, NA, plot3,
 plot
 
 ## Prevent from changing the results. We put # here. 
-ggsave(filename = "../Output/03b_compare_hazard.png", plot, bg = "white",
-       width = 12, height = 16, dpi = 300)
+# ggsave(filename = "../Output/03b_compare_hazard.png", plot, bg = "white",
+#        width = 12, height = 16, dpi = 1000)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

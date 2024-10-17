@@ -87,20 +87,20 @@ mfit2_data_RFC[nrow(mfit2_data_RFC), "time"] <- 8
 ###############################################################################################
 ## Semi-Markov with standard parametric models, all-cause survival framework (Williams et al.) ##
 ###############################################################################################
-semiMarkov_williams_ac_FC <- readRDS("../Data/04a7_semiMarkov_williams_ac_microsim_FC.rds")
-semiMarkov_williams_ac_RFC <- readRDS("../Data/04a7_semiMarkov_williams_ac_microsim_RFC.rds")
+semiMarkov_williams_ac_FC <- readRDS("../Data/04a3_semiMarkov_williams_ac_microsim_FC.rds")
+semiMarkov_williams_ac_RFC <- readRDS("../Data/04a3_semiMarkov_williams_ac_microsim_RFC.rds")
 
 ###############################################################################
 ## Semi-Markov with flexible parametric models, all-cause survival framework ##
 ###############################################################################
-semiMarkov_fpm_ac_FC <- readRDS("../Data/04a5_semiMarkov_fpm_ac_microsim_FC.rds")
-semiMarkov_fpm_ac_RFC <- readRDS("../Data/04a5_semiMarkov_fpm_ac_microsim_RFC.rds")
+semiMarkov_fpm_ac_FC <- readRDS("../Data/04a1_semiMarkov_fpm_ac_microsim_FC.rds")
+semiMarkov_fpm_ac_RFC <- readRDS("../Data/04a1_semiMarkov_fpm_ac_microsim_RFC.rds")
 
 ###################################################################################
 ## Semi-Markov with flexible parametric models, relative survival framework ##
 ###################################################################################
-semiMarkov_fpm_rel_FC <- readRDS("../Data/04a6_semiMarkov_fpm_rel_microsim_FC.rds")
-semiMarkov_fpm_rel_RFC <- readRDS("../Data/04a6_semiMarkov_fpm_rel_microsim_RFC.rds")
+semiMarkov_fpm_rel_FC <- readRDS("../Data/04a2_semiMarkov_fpm_rel_microsim_FC.rds")
+semiMarkov_fpm_rel_RFC <- readRDS("../Data/04a2_semiMarkov_fpm_rel_microsim_RFC.rds")
 
 ##############################################################
 ##============================================================
@@ -252,7 +252,7 @@ plot
 ## Save results
 ## Prevent from changing the results. We put # here.
 # ggsave("../Output/04c_figure_survextrap.png", plot, bg = "white",
-# width = 10, height = 7, units = "in", dpi = 300)
+# width = 10, height = 7, units = "in", dpi = 1000)
 ################################################################
 # Copyright 2024 Chen EYT. All Rights Reserved.
 # A Multistate Model Incorporating Relative Survival Extrapolation and 

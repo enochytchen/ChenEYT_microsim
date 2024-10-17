@@ -725,7 +725,7 @@ ft <- autofit(ft)
 ft <- set_header_labels(ft, V1 = "Treatment", V2 = "State", V3 = "Source", 
                             V4 = "4", V5 = "8", V6 = "15", V7 = "50*",
                             V8 = "4", V9 = "8", V10 = "15", V11 = "50*")
-ft <- add_header_row(ft, values = c("","Lengths of stay in years at times (years)", "Survival proportions at times (years)"),
+ft <- add_header_row(ft, values = c("","Mean state sojourn time/RMST in years at times (years)", "Survival proportions at times (years)"),
                      colwidths = c(3, 4, 4))
 
 ft <- align(ft, align = c("right"), i = 1, j = NULL, part = "header")
@@ -735,7 +735,7 @@ ft <- align(ft, align = c("right"), i = 1:24, j = 4:11, part = "body")
 
 ft <- bold(ft, i = c(1,5,9,13,17,21), j = 1:11, bold = TRUE, part = "body")
 
-ft <- add_footer_lines(ft,"LE, life expectancy; FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; SPMs, standard parametric models; FPMs, flexible parametric models; ASF, all-cause survival framework; RSF, relative survival framework; OS, overall survival.")
+ft <- add_footer_lines(ft,"LE, life expectancy; FC, fludarabine and cyclophosphamide; RFC, rituximab, fludarabine, and cyclophosphamide; SPMs, standard parametric models; FPMs, flexible parametric models; ASF, all-cause survival framework; RSF, relative survival framework; OS, overall survival; RMST, restricted mean survival time.")
 ft <- autofit(ft)
 ft
 

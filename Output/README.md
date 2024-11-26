@@ -5,7 +5,7 @@ The repository enables the reproduction of analyses from the study: Chen EYT, Di
 You can clone this repository to your local machine or download the files as a ZIP archive by clicking the green button in the top-right corner.
 
 ## Folder Structure
-- This folder `Output` contains the data used and generated in the analyses.
+- This folder `Output` contains s the figures, tables, and probability sensitivity analysis results generated from the analyses.
 
 ## References
 1. Chen EYT, Dickman PW, Clements MS. A Multistate Model Incorporating Relative Survival Extrapolation and Mixed Time Scales for Health Technology Assessment. *PharmacoEconomics*. 2024. (doi:https://doi.org/10.1007/s40273-024-01457-w).

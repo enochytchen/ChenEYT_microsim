@@ -1,10 +1,32 @@
-## Copyright 2024 Chen EYT. All Rights Reserved.
-## A Multistate Model Incorporating Relative Survival Extrapolation and Mixed Time Scales for Health Technology Assessment
+# A Multistate Model Incorporating Relative Survival Extrapolation and Mixed Time Scales for Health Technology Assessment
+## Using this repository
+The repository enables the reproduction of analyses from the study: Chen EYT, Dickman PW, Clements MS. A Multistate Model Incorporating Relative Survival Extrapolation and Mixed Time Scales for Health Technology Assessment. *PharmacoEconomics*. 2024. (doi:https://doi.org/10.1007/s40273-024-01457-w). This work extends upon data and methodologies from Williams et al. (2017), whose supplementary materials informed portions of the analyses (available from: www.gla.ac.uk/hehta/reports/cwilliams).
 
-References:
-1. Hallek M, Fischer K, Fingerle-Rowson G, Fink A, Busch R, Mayer J, et al. Addition of rituximab to fludarabine and cyclophosphamide in patients with chronic lymphocytic leukaemia: a randomised, open-label, phase 3 trial. The Lancet. 2010 Oct;376(9747):1164–74. 
-2. Williams C, Lewsey JD, Briggs AH, Mackay DF. Cost-effectiveness Analysis in R Using a Multi-state Modeling Survival Analysis Framework: A Tutorial. Med Decis Making. 2017 May;37(4):340–52.
-3. Fischer K, Bahlo J, Fink AM, Goede V, Herling CD, Cramer P, et al. Long-term remissions after FCR chemoimmunotherapy in previously untreated patients with CLL: updated results of the CLL8 trial. Blood. 2016 Jan 14;127(2):208–15.
-4. University of California Berkeley and Max Planck Institute for Demographic Research. The Human Mortality Database [Internet]. Available from: https://www.mortality.org.
+You can clone this repository to your local machine or download the files as a ZIP archive by clicking the green button in the top-right corner.
 
+## Folder Structure
+- This folder `Data` contains the data used and generated in the analyses.
 
+## References
+1. Chen EYT, Dickman PW, Clements MS. A Multistate Model Incorporating Relative Survival Extrapolation and Mixed Time Scales for Health Technology Assessment. *PharmacoEconomics*. 2024. (doi:https://doi.org/10.1007/s40273-024-01457-w).
+2. Williams C, Lewsey JD, Briggs AH, Mackay DF. Cost-effectiveness Analysis in R Using a Multi-state Modelling Survival Analysis Framework: A Tutorial. *Med Desis Making*. 2017; 37(4): 340-52.
+
+## License
+Copyright © 2024. All rights reserved.<br>
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
+![R Version](https://img.shields.io/badge/R-%3E%3D4.4.1-blue)
+<br>
+Licensed to the Apache Software Foundation (ASF) under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The ASF licenses this file to You under the Apache License, Version 2.0
+(the "License"); you may not use this file except in compliance with
+the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

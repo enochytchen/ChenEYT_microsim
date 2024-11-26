@@ -1,4 +1,4 @@
-## Filename: ../Data/01a_fischer2016_PFS
+## Filename: 01a_fischer2016_PFS
 ## Purpose: Organise progression-free survival digitised data from Fischer et al., 2016
 ##          8 years of follow-up from CLL-8 trial
 ## Reference: Fischer K, Bahlo J, Fink AM, Goede V, Herling CD, Cramer P, et al. 
@@ -153,9 +153,10 @@ plot(mfit,
 write.table(fischer2016, file = "../Data/01a_fischer2016_pfs.txt", sep = " ",
             row.names = FALSE, col.names = TRUE,  quote = FALSE)
 ################################################################
-# Copyright 2024 Chen EYT. All Rights Reserved.
+# Chen EYT, Dickman PW, Clements MS. 
 # A Multistate Model Incorporating Relative Survival Extrapolation and 
-# Mixed Time Scales for Health Technology Assessment
+# Mixed Time Scales for Health Technology Assessment. 
+# PharmacoEconomics. 2024. (doi:https://doi.org/10.1007/s40273-024-01457-w).
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with

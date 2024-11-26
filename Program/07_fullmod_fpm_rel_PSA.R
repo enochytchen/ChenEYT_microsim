@@ -601,9 +601,10 @@ output_df <- do.call(rbind, output)
 ## Prevent from changing the results. We put # here.                        
 # save(output_df, file = "../Output/07_fullmod_fpm_rel_PSA.RData")
 ################################################################
-# Copyright 2024 Chen EYT. All Rights Reserved.
+# Chen EYT, Dickman PW, Clements MS. 
 # A Multistate Model Incorporating Relative Survival Extrapolation and 
-# Mixed Time Scales for Health Technology Assessment
+# Mixed Time Scales for Health Technology Assessment. 
+# PharmacoEconomics. 2024. (doi:https://doi.org/10.1007/s40273-024-01457-w).
 # 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
